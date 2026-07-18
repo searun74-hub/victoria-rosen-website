@@ -1,4 +1,15 @@
 <!DOCTYPE html><html class="light" lang="he" dir="rtl"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><title id="page-title">שיר | ויקטוריה רוזן</title>
+<meta id="meta-description" name="description" content="שיר מקורי מאת ויקטוריה רוזן, כותבת מילים ומלחינה. צפו במילים, האזינו לשיר וקראו עוד.">
+<link id="canonical-link" rel="canonical" href="https://searun74-hub.github.io/victoria-rosen-website/song.html">
+<meta id="og-title" property="og:type" content="music.song">
+<meta id="og-title2" property="og:title" content="שיר | ויקטוריה רוזן">
+<meta id="og-description" property="og:description" content="שיר מקורי מאת ויקטוריה רוזן.">
+<meta id="og-url" property="og:url" content="https://searun74-hub.github.io/victoria-rosen-website/song.html">
+<meta property="og:image" content="https://searun74-hub.github.io/victoria-rosen-website/victoria.jpeg">
+<meta property="og:locale" content="he_IL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://searun74-hub.github.io/victoria-rosen-website/victoria.jpeg">
+<script id="song-jsonld" type="application/ld+json"></script>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Amatic+SC:wght@400;700&family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
@@ -142,7 +153,27 @@
         contentEl.classList.add('hidden');
         notFoundEl.classList.remove('hidden');
     } else {
-        document.getElementById('page-title').textContent = song.title + ' | ויקטוריה רוזן';
+        const pageTitle = song.title + ' | ויקטוריה רוזן';
+        document.getElementById('page-title').textContent = pageTitle;
+        document.getElementById('meta-description').setAttribute('content', song.blurb);
+        const pageUrl = 'https://searun74-hub.github.io/victoria-rosen-website/song.html?slug=' + encodeURIComponent(song.slug);
+        document.getElementById('canonical-link').setAttribute('href', pageUrl);
+        document.getElementById('og-title2').setAttribute('content', pageTitle);
+        document.getElementById('og-description').setAttribute('content', song.blurb);
+        document.getElementById('og-url').setAttribute('content', pageUrl);
+
+        const jsonLd = {
+            '@context': 'https://schema.org',
+            '@type': 'MusicComposition',
+            'name': song.title,
+            'composer': { '@type': 'Person', 'name': 'ויקטוריה רוזן' },
+            'url': pageUrl,
+            'description': song.blurb
+        };
+        if (song.performer) {
+            jsonLd.recordedAs = { '@type': 'MusicRecording', 'byArtist': { '@type': 'Person', 'name': song.performer } };
+        }
+        document.getElementById('song-jsonld').textContent = JSON.stringify(jsonLd);
 
         const tagsHtml = song.tags.map(tag =>
             `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-secondary">${tag}</span>`

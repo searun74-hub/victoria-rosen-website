@@ -1,0 +1,64 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>הלב הגדול שלך - עטיפת השיר</title>
+<desc>שמי שקיעה חמים עם לב זוהר במרכז, מוקף בניצוצות קסם, ושביל מתפתל המוביל אל אופק רחב וכדור עולם קטן, בהשראת מילות השיר על אמונה עצמית ואומץ.</desc>
+<defs>
+<linearGradient id="sky2" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#6b5b95"/>
+<stop offset="45%" stop-color="#c98fa0"/>
+<stop offset="75%" stop-color="#f3a683"/>
+<stop offset="100%" stop-color="#fbe2a1"/>
+</linearGradient>
+<radialGradient id="heartGlow" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#fbe2a1" stop-opacity="0.9"/>
+<stop offset="55%" stop-color="#f3a683" stop-opacity="0.35"/>
+<stop offset="100%" stop-color="#f3a683" stop-opacity="0"/>
+</radialGradient>
+<linearGradient id="heartFill" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#fdfcf0"/>
+<stop offset="100%" stop-color="#f3a683"/>
+</linearGradient>
+<linearGradient id="ground" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#2d3436" stop-opacity="0.7"/>
+<stop offset="100%" stop-color="#2d3436" stop-opacity="0.92"/>
+</linearGradient>
+</defs>
+
+<rect x="0" y="0" width="800" height="450" fill="url(#sky2)"/>
+
+<g fill="#fdfcf0" opacity="0.85">
+<circle cx="80" cy="70" r="1.8"/>
+<circle cx="140" cy="120" r="1.3"/>
+<circle cx="60" cy="160" r="1.4"/>
+<circle cx="200" cy="60" r="1.6"/>
+<circle cx="640" cy="80" r="1.6"/>
+<circle cx="700" cy="140" r="1.3"/>
+<circle cx="740" cy="60" r="1.8"/>
+<circle cx="30" cy="230" r="1.2"/>
+</g>
+
+<circle cx="400" cy="210" r="150" fill="url(#heartGlow)"/>
+
+<g transform="translate(400,210) scale(1.5)">
+<path d="M0 24 C -34 -6 -46 -34 -24 -46 C -8 -54 0 -38 0 -30 C 0 -38 8 -54 24 -46 C 46 -34 34 -6 0 24 Z" fill="url(#heartFill)"/>
+</g>
+
+<g fill="#fdfcf0" opacity="0.9">
+<path d="M290 130 l4 12 12 4 -12 4 -4 12 -4 -12 -12 -4 12 -4 z"/>
+<path d="M520 150 l3.5 10 10 3.5 -10 3.5 -3.5 10 -3.5 -10 -10 -3.5 10 -3.5 z"/>
+<path d="M330 90 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z"/>
+<path d="M470 100 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z"/>
+<circle cx="360" cy="320" r="2.4"/>
+<circle cx="440" cy="320" r="2.4"/>
+</g>
+
+<path d="M0 330 Q160 300 300 320 T600 300 T800 330 L800 450 L0 450 Z" fill="url(#ground)"/>
+
+<path d="M400 450 C 400 380 340 350 250 340 C 180 332 90 320 20 300" fill="none" stroke="#fdfcf0" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 14" opacity="0.75"/>
+
+<g transform="translate(658,362)">
+<circle cx="0" cy="0" r="30" fill="#8ecae6" opacity="0.9"/>
+<path d="M-30 0 Q0 -14 30 0" fill="none" stroke="#2d3436" stroke-width="1.5" opacity="0.35"/>
+<path d="M-26 12 Q0 2 26 12" fill="none" stroke="#2d3436" stroke-width="1.5" opacity="0.3"/>
+<path d="M-18 -18 Q0 -8 8 -22" fill="none" stroke="#2d3436" stroke-width="1.5" opacity="0.3"/>
+</g>
+</svg>

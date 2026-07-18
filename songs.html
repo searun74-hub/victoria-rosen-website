@@ -1,0 +1,157 @@
+<!DOCTYPE html><html class="light" lang="he" dir="rtl"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><title>קטלוג שירים | ויקטוריה רוזן</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Amatic+SC:wght@400;700&family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#d1e89b",
+                    "secondary": "#f3a683",
+                    "tertiary": "#8ecae6",
+                    "surface": "#ffffff",
+                    "background": "#fdfcf0",
+                    "on-surface": "#2d3436",
+                    "accent-gradient-start": "#d1e89b",
+                    "accent-gradient-end": "#f3a683"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "1.5rem",
+                    "xl": "2.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "container-max": "1200px",
+                    "section-gap": "100px",
+                    "margin-mobile": "20px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "display": ["Amatic SC", "cursive"],
+                    "body": ["Assistant", "sans-serif"],
+                    "headline": ["Heebo", "sans-serif"]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script>
+<style>
+    .hero-mesh {
+        background-color: #fdfcf0;
+        background-image:
+            radial-gradient(circle at 12% 15%, rgba(209, 232, 155, 0.55) 0%, transparent 45%),
+            radial-gradient(circle at 85% 12%, rgba(243, 166, 131, 0.5) 0%, transparent 50%),
+            radial-gradient(circle at 80% 85%, rgba(142, 202, 230, 0.55) 0%, transparent 50%),
+            radial-gradient(circle at 15% 80%, rgba(253, 230, 138, 0.5) 0%, transparent 50%);
+        background-repeat: no-repeat;
+        background-size: 140% 140%;
+        animation: mesh-drift 18s ease-in-out infinite alternate;
+    }
+    @keyframes mesh-drift {
+        0%   { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%; }
+        100% { background-position: 5% 8%, 95% 5%, 92% 92%, 8% 95%; }
+    }
+    .glass-card {
+        background-color: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px rgba(45, 52, 54, 0.06);
+    }
+    .soft-gradient {
+        background-image: linear-gradient(135deg, rgba(209, 232, 155, 0.25) 0%, rgba(253, 252, 240, 0.4) 45%, rgba(243, 166, 131, 0.22) 100%);
+    }
+    .bubbly-hover {
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+    }
+    .bubbly-hover:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(45, 52, 54, 0.12);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .hero-mesh { animation: none; }
+        .bubbly-hover { transition: none; }
+    }
+</style>
+</head><body class="font-body bg-background selection:bg-primary/30">
+<!-- TopAppBar -->
+<header class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] z-50 flex justify-between items-center px-8 h-16 max-w-container-max mx-auto glass-card rounded-full transition-all duration-300">
+<div class="flex items-center gap-3">
+    <a href="index.html" class="flex items-center gap-3">
+    <img src="LOGO.png" alt="Logo Victoria Rosen" class="h-12 w-12 object-contain">
+    <span class="font-display text-4xl text-on-surface font-bold">ויקטוריה רוזן</span>
+    </a>
+</div>
+<nav class="hidden md:flex gap-8 items-center font-headline font-semibold">
+<a class="text-on-surface hover:text-secondary transition-colors" href="index.html#about">אודות</a>
+<a class="text-secondary transition-colors" href="songs.html">יצירות</a>
+<a class="text-on-surface hover:text-secondary transition-colors" href="index.html#contact">קשר</a>
+</nav>
+<a href="index.html#contact" class="bg-primary text-on-surface px-6 py-2 rounded-full font-headline font-bold hover:shadow-lg transition-all active:scale-95">
+        הזמינו שיר
+    </a>
+</header>
+<main>
+<!-- Page Header -->
+<section class="relative flex flex-col items-center justify-center text-center px-gutter overflow-hidden hero-mesh pt-40 pb-24">
+<div class="relative z-10 max-w-3xl">
+<span class="font-headline text-lg text-on-surface/60 uppercase mb-6 block tracking-widest bg-white/40 backdrop-blur-sm px-4 py-1 rounded-full w-fit mx-auto">קטלוג שירים</span>
+<h1 class="font-display text-6xl md:text-8xl mb-6 leading-tight text-on-surface">כל השירים שלי</h1>
+<p class="font-body text-xl text-on-surface/80 leading-relaxed max-w-xl mx-auto font-light">שירים שפורסמו וסמפלים להאזנה, כולם מילים ולחן מקוריים פרי עטי. לחצו על שיר כדי לשמוע ולקרוא עוד.</p>
+</div>
+</section>
+<!-- Song Grid -->
+<section class="py-section-gap px-gutter max-w-container-max mx-auto">
+<div id="songs-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-20 px-gutter bg-white/50 backdrop-blur-sm border-t border-on-surface/5">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center">
+<div class="flex flex-col mb-12 md:mb-0 items-center md:items-start">
+<span class="font-display text-5xl text-secondary mb-2">ויקטוריה רוזן</span>
+<p class="text-on-surface/50 font-headline">© 2026 ויקטוריה רוזן. כל מילה ולחן כאן נכתבו באהבה, שיר אחר שיר.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-10 font-headline font-bold text-lg">
+<a class="text-on-surface/60 hover:text-secondary transition-all" href="terms.html">תנאי שימוש</a>
+</div>
+</div>
+</footer>
+<script src="songs-data.js?v=3"></script>
+<script>
+    // Header Scroll Effect
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+            header.classList.add('top-0', 'w-full', 'rounded-none');
+            header.classList.remove('top-4', 'w-[90%]', 'rounded-full');
+        } else {
+            header.classList.remove('top-0', 'w-full', 'rounded-none');
+            header.classList.add('top-4', 'w-[90%]', 'rounded-full');
+        }
+    });
+
+    // Render song grid from shared data
+    const grid = document.getElementById('songs-grid');
+    grid.innerHTML = SONGS.map(song => `
+        <a href="song.html?slug=${encodeURIComponent(song.slug)}" class="glass-card rounded-xl overflow-hidden bubbly-hover group block">
+            <div class="relative aspect-video bg-gradient-to-br ${song.thumbGradient} flex items-center justify-center overflow-hidden">
+                ${song.youtubeId
+                    ? `<img src="https://img.youtube.com/vi/${song.youtubeId}/hqdefault.jpg" alt="${song.title}" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-black/25"></div>`
+                    : (song.coverImage ? `<img src="${song.coverImage}" alt="${song.title}" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-black/15"></div>` : '')}
+                <span class="relative material-symbols-outlined text-white text-6xl drop-shadow-lg group-hover:scale-110 transition-transform">${song.youtubeId ? 'smart_display' : (song.coverImage ? 'play_circle' : 'music_note')}</span>
+            </div>
+            <div class="p-6">
+                <div class="flex flex-wrap gap-2 mb-3">
+                    ${song.tags.map(tag => `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-secondary">${tag}</span>`).join('')}
+                </div>
+                <h3 class="font-headline text-2xl mb-2 font-bold">${song.title}</h3>
+                <p class="text-on-surface/60 text-sm">${song.blurb}</p>
+            </div>
+        </a>
+    `).join('');
+</script>
+</body></html>

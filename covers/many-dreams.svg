@@ -1,0 +1,76 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Many Dreams - cover art</title>
+<desc>A dreamy night sky fading into dawn, with a bird spreading its wings among stars and floating hearts, illustrating a song about dreams, hope and friendship.</desc>
+<defs>
+<linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#3a3a6b"/>
+<stop offset="35%" stop-color="#6b5b95"/>
+<stop offset="65%" stop-color="#c98fa0"/>
+<stop offset="100%" stop-color="#f3a683"/>
+</linearGradient>
+<radialGradient id="moonglow" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#fdfcf0" stop-opacity="0.9"/>
+<stop offset="100%" stop-color="#fdfcf0" stop-opacity="0"/>
+</radialGradient>
+<linearGradient id="hillsFar" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#8ecae6" stop-opacity="0.55"/>
+<stop offset="100%" stop-color="#8ecae6" stop-opacity="0.25"/>
+</linearGradient>
+<linearGradient id="hillsNear" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#2d3436" stop-opacity="0.85"/>
+<stop offset="100%" stop-color="#2d3436" stop-opacity="0.95"/>
+</linearGradient>
+</defs>
+
+<rect x="0" y="0" width="800" height="450" fill="url(#sky)"/>
+
+<circle cx="630" cy="110" r="70" fill="url(#moonglow)"/>
+<circle cx="630" cy="110" r="34" fill="#fdfcf0"/>
+<circle cx="644" cy="100" r="30" fill="#6b5b95" opacity="0.35"/>
+
+<g fill="#fdfcf0">
+<circle cx="90" cy="70" r="2.2"/>
+<circle cx="150" cy="130" r="1.6"/>
+<circle cx="220" cy="55" r="1.8"/>
+<circle cx="300" cy="100" r="2"/>
+<circle cx="60" cy="180" r="1.4"/>
+<circle cx="380" cy="60" r="1.6"/>
+<circle cx="450" cy="130" r="2"/>
+<circle cx="500" cy="70" r="1.5"/>
+<circle cx="130" cy="230" r="1.3"/>
+<circle cx="250" cy="170" r="1.4"/>
+<circle cx="330" cy="150" r="1.2"/>
+<circle cx="30" cy="110" r="1.6"/>
+<circle cx="560" cy="150" r="1.4"/>
+<circle cx="180" cy="30" r="1.3"/>
+</g>
+
+<path d="M0 300 Q150 250 300 290 T600 270 T800 300 L800 450 L0 450 Z" fill="url(#hillsFar)"/>
+<path d="M0 360 Q200 310 400 350 T800 330 L800 450 L0 450 Z" fill="url(#hillsNear)"/>
+
+<g transform="translate(400,220)">
+<path d="M-6 -4 C -30 -34 -78 -42 -120 -18 C -84 -14 -54 -2 -34 12 C -60 6 -92 10 -118 26 C -84 18 -50 18 -26 26 C -14 12 -8 2 -6 -4 Z" fill="#2d3436"/>
+<path d="M6 -4 C 30 -34 78 -42 120 -18 C 84 -14 54 -2 34 12 C 60 6 92 10 118 26 C 84 18 50 18 26 26 C 14 12 8 2 6 -4 Z" fill="#2d3436"/>
+<ellipse cx="0" cy="0" rx="7" ry="10" fill="#2d3436"/>
+</g>
+<g fill="#fdfcf0" opacity="0.7">
+<circle cx="278" cy="200" r="1.6"/>
+<circle cx="292" cy="214" r="1.2"/>
+<circle cx="522" cy="200" r="1.6"/>
+<circle cx="508" cy="214" r="1.2"/>
+</g>
+
+<g fill="none" stroke="#fdfcf0" stroke-width="2" stroke-linecap="round" opacity="0.8">
+<path d="M120 150 q10 -14 20 0"/>
+<path d="M660 260 q10 -14 20 0"/>
+<path d="M60 260 q10 -14 20 0"/>
+</g>
+
+<g fill="#f3a683" opacity="0.85">
+<path d="M160 340 c0 -10 -14 -10 -14 0 c0 8 14 16 14 16 c0 0 14 -8 14 -16 c0 -10 -14 -10 -14 0 z"/>
+<path d="M690 200 c0 -8 -11 -8 -11 0 c0 6 11 12 11 12 c0 0 11 -6 11 -12 c0 -8 -11 -8 -11 0 z"/>
+</g>
+<g fill="#d1e89b" opacity="0.8">
+<path d="M240 380 c0 -8 -11 -8 -11 0 c0 6 11 12 11 12 c0 0 11 -6 11 -12 c0 -8 -11 -8 -11 0 z"/>
+</g>
+</svg>

@@ -126,6 +126,26 @@
         .hero-mesh { animation: none; }
         .bubbly-hover { transition: none; }
     }
+
+    /* Floating music notes drifting up through the hero */
+    .music-note {
+        position: absolute;
+        bottom: -10%;
+        color: var(--note-color, #d1e89b);
+        opacity: 0;
+        animation: note-rise var(--note-duration, 12s) ease-in var(--note-delay, 0s) infinite;
+        pointer-events: none;
+    }
+    @keyframes note-rise {
+        0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+        10%  { opacity: 0.5; }
+        50%  { transform: translateY(-45vh) translateX(var(--note-drift, 20px)) rotate(12deg); opacity: 0.5; }
+        90%  { opacity: 0; }
+        100% { transform: translateY(-90vh) translateX(0) rotate(-8deg); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .music-note { display: none; }
+    }
 </style>
 </head><body class="font-body bg-background selection:bg-primary/30">
 <!-- TopAppBar -->
@@ -164,6 +184,12 @@
 <!-- Decorative elements from inspiration image style -->
 <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-tertiary/20 rounded-full blur-3xl"></div>
 <div class="absolute top-20 -left-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
+<!-- Floating music notes -->
+<span class="material-symbols-outlined music-note text-4xl" style="left:8%; --note-color:#8ecae6; --note-duration:14s; --note-delay:0s; --note-drift:30px;">music_note</span>
+<span class="material-symbols-outlined music-note text-3xl" style="left:22%; --note-color:#f3a683; --note-duration:11s; --note-delay:2.5s; --note-drift:-20px;">music_note</span>
+<span class="material-symbols-outlined music-note text-5xl" style="left:75%; --note-color:#d1e89b; --note-duration:16s; --note-delay:1s; --note-drift:-35px;">queue_music</span>
+<span class="material-symbols-outlined music-note text-3xl" style="left:88%; --note-color:#8ecae6; --note-duration:13s; --note-delay:4s; --note-drift:25px;">music_note</span>
+<span class="material-symbols-outlined music-note text-4xl" style="left:50%; --note-color:#f3a683; --note-duration:15s; --note-delay:6s; --note-drift:15px;">music_note</span>
 </section>
 <!-- About Section -->
 <section class="py-section-gap px-gutter max-w-container-max mx-auto" id="about">

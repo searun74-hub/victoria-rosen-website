@@ -28,4 +28,4 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-Sitemap: https://searun74-hub.github.io/victoria-rosen-website/sitemap.xml
+Sitemap: https://rozenmusic.co.il/sitemap.xml

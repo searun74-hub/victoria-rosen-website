@@ -1,7 +1,7 @@
 <!DOCTYPE html><html class="light" lang="he" dir="rtl"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><title>ויקטוריה רוזן | כתיבת שירים בהתאמה אישית, ראשון לציון</title>
 <meta name="geo.region" content="IL">
 <meta name="geo.placename" content="ראשון לציון">
-<meta name="description" content="ויקטוריה רוזן, כותבת מילים ומלחינה עם למעלה מ-25 שנות ניסיון. כתיבת שירים מקוריים בהתאמה אישית: שירי חתונה לריקוד הראשון, מתנות לבר/בת מצווה, שירי יום נישואין ושירי ילדים, ושיתופי פעולה עם אמנים ומוזיקאים.">
+<meta name="description" content="ויקטוריה רוזן, כותבת מילים ומלחינה בראשון לציון עם למעלה מ-25 שנות ניסיון. הזמנת שיר אישי בהתאמה מלאה: שיר מתנה לחתונה ולריקוד הראשון, שיר לבר/בת מצווה, יום נישואין, יום הולדת ושירי ילדים.">
 <link rel="canonical" href="https://rozenmusic.co.il/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ויקטוריה רוזן">
@@ -142,10 +142,19 @@
 <a class="text-on-surface hover:text-secondary transition-colors" href="songs.html">יצירות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="#contact">קשר</a>
 </nav>
-<button class="bg-primary text-on-surface px-3 md:px-6 py-2 rounded-full font-headline font-bold hover:shadow-lg transition-all active:scale-95 text-sm md:text-base whitespace-nowrap flex-shrink-0">
+<a class="hidden md:inline-block bg-primary text-on-surface px-3 md:px-6 py-2 rounded-full font-headline font-bold hover:shadow-lg transition-all active:scale-95 text-sm md:text-base whitespace-nowrap flex-shrink-0" href="#contact">
         הזמינו שיר
-    </button>
+    </a>
+<button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-10 h-10 flex-shrink-0" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu">
+<span class="material-symbols-outlined text-3xl text-on-surface">menu</span>
+</button>
 </header>
+<nav id="mobile-menu" class="hidden md:hidden fixed top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-container-max z-40 glass-card rounded-2xl flex flex-col items-center gap-6 py-8 font-headline font-semibold text-lg">
+<a class="text-on-surface hover:text-secondary transition-colors" href="#about">אודות</a>
+<a class="text-on-surface hover:text-secondary transition-colors" href="songs.html">יצירות</a>
+<a class="text-on-surface hover:text-secondary transition-colors" href="#contact">קשר</a>
+<a class="bg-primary text-on-surface px-6 py-2 rounded-full font-bold" href="#contact">הזמינו שיר</a>
+</nav>
 <main>
 <!-- Hero Section -->
 <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-gutter overflow-hidden hero-mesh pt-20">
@@ -201,7 +210,7 @@
 </div>
 <div class="p-6">
 <div class="flex flex-wrap gap-2 mb-3">
-<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-secondary">פולק</span>
+<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">פולק</span>
 <span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-primary/30 text-on-surface">רומנטי</span>
 </div>
 <h3 class="font-headline text-2xl mb-3 font-bold">בזמן הזה</h3>
@@ -220,7 +229,7 @@
 <div class="p-6">
 <div class="flex flex-wrap gap-2 mb-3">
 <span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-primary/30 text-on-surface">פופ</span>
-<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-tertiary/20 text-tertiary">שירי ילדים</span>
+<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-tertiary/20 text-on-surface">שירי ילדים</span>
 </div>
 <h3 class="font-headline text-2xl mb-3 font-bold">כל המשאלות שלי</h3>
 <span class="inline-flex items-center gap-2 text-on-surface font-headline font-bold group-hover:text-secondary transition-colors">
@@ -263,7 +272,7 @@
 <div class="md:col-span-8 glass-card p-10 rounded-xl bubbly-hover relative overflow-hidden group">
 <div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/10 rounded-full"></div>
 <div class="flex flex-wrap items-center gap-2 mb-4">
-<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-secondary">פולק</span>
+<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">פולק</span>
 <span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-primary/30 text-on-surface">רומנטי</span>
 <span class="font-headline text-on-surface/40 text-xs uppercase tracking-widest">· דוגמה קצרה</span>
 </div>
@@ -282,7 +291,7 @@
 <div class="md:col-span-4 glass-card p-8 rounded-xl bubbly-hover mt-0 md:mt-12 bg-tertiary/10 border-none">
 <div class="flex flex-wrap gap-2 mb-3">
 <span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-primary/30 text-on-surface">פופ</span>
-<span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-tertiary/20 text-tertiary">שירי ילדים</span>
+<span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-tertiary/20 text-on-surface">שירי ילדים</span>
 </div>
 <h4 class="font-headline text-2xl mb-4 font-bold">חלומות מנייר</h4>
 <button class="flex items-center gap-2 text-on-surface bg-white px-4 py-2 rounded-full font-headline font-bold shadow-sm">
@@ -291,8 +300,8 @@
 </div>
 <div class="md:col-span-4 glass-card p-8 rounded-xl bubbly-hover">
 <div class="flex flex-wrap gap-2 mb-3">
-<span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-tertiary/20 text-tertiary">סינמטי</span>
-<span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-secondary/20 text-secondary">שיר בת מצווה</span>
+<span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-tertiary/20 text-on-surface">סינמטי</span>
+<span class="font-headline text-xs font-bold px-2.5 py-1 rounded-full bg-secondary/20 text-on-surface">שיר בת מצווה</span>
 </div>
 <h4 class="font-headline text-2xl mb-4 font-bold">הדי נובמבר</h4>
 <button class="flex items-center gap-2 text-on-surface bg-primary/20 px-4 py-2 rounded-full font-headline font-bold">
@@ -439,6 +448,21 @@
             document.querySelector(this.getAttribute('href')).scrollIntoView({
                 behavior: 'smooth'
             });
+        });
+    });
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuBtn.addEventListener('click', () => {
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
         });
     });
 

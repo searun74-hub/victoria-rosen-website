@@ -107,7 +107,7 @@
         הזמינו שיר
     </a>
 </header>
-<main id="main-content" tabindex="-1" class="outline-none pt-40 pb-section-gap px-gutter max-w-[900px] mx-auto">
+<main id="main-content" tabindex="-1" class="outline-none pt-40 pb-16 md:pb-section-gap px-gutter max-w-[900px] mx-auto">
 <a href="songs.html" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold mb-10 transition-colors">
 <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span> חזרה לקטלוג
 </a>
@@ -247,7 +247,7 @@
         const lyricsHtml = song.lyricsExcerpt
             ? `<div class="glass-card rounded-xl p-10 md:p-14 mb-12">
                 <span class="font-headline text-on-surface mb-4 block font-bold uppercase tracking-widest text-sm">מילים</span>
-                <p class="font-headline text-2xl md:text-3xl leading-relaxed italic text-on-surface/90 whitespace-pre-line">${song.lyricsExcerpt}</p>
+                <p class="font-headline text-2xl md:text-3xl leading-relaxed italic text-on-surface/90 whitespace-pre-line" dir="auto">${song.lyricsExcerpt}</p>
             </div>`
             : '';
 
@@ -263,8 +263,8 @@
                         <span class="truncate max-w-[140px] md:max-w-none">${prevSong.title}</span>
                     </span>
                 </a>
-                <a href="song.html?slug=${encodeURIComponent(nextSong.slug)}" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold transition-colors min-w-0 text-left">
-                    <span class="flex flex-col items-end text-left min-w-0">
+                <a href="song.html?slug=${encodeURIComponent(nextSong.slug)}" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold transition-colors min-w-0">
+                    <span class="flex flex-col items-start text-right min-w-0">
                         <span class="text-xs font-normal text-on-surface/50 uppercase tracking-widest">השיר הבא</span>
                         <span class="truncate max-w-[140px] md:max-w-none">${nextSong.title}</span>
                     </span>

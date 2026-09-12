@@ -132,13 +132,14 @@
     }
 </style>
 </head><body class="font-body bg-background selection:bg-primary/30">
+<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[60] focus:bg-on-surface focus:text-white focus:px-6 focus:py-3 focus:rounded-full focus:font-headline focus:font-bold">דלגו לתוכן הראשי</a>
 <!-- TopAppBar -->
 <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] z-50 flex justify-between items-center px-4 md:px-8 h-16 max-w-container-max mx-auto glass-card rounded-full transition-all duration-300">
 <div class="flex items-center gap-2 md:gap-3 min-w-0">
-    <img src="LOGO.png" alt="Logo Victoria Rosen" class="h-9 w-9 md:h-12 md:w-12 object-contain flex-shrink-0">
+    <img src="LOGO.png" alt="לוגו ויקטוריה רוזן" class="h-9 w-9 md:h-12 md:w-12 object-contain flex-shrink-0">
     <span class="font-display text-xl md:text-4xl text-on-surface font-bold whitespace-nowrap truncate">ויקטוריה רוזן</span>
 </div>
-<nav class="hidden md:flex gap-8 items-center font-headline font-semibold">
+<nav class="hidden md:flex gap-8 items-center font-headline font-semibold" aria-label="ניווט ראשי">
 <a class="text-on-surface hover:text-secondary transition-colors" href="#about">אודות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="songs.html">יצירות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="#contact">קשר</a>
@@ -147,20 +148,20 @@
         הזמינו שיר
     </a>
 <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-10 h-10 flex-shrink-0" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu">
-<span class="material-symbols-outlined text-3xl text-on-surface">menu</span>
+<span class="material-symbols-outlined text-3xl text-on-surface" aria-hidden="true">menu</span>
 </button>
 </header>
-<nav id="mobile-menu" class="hidden md:hidden fixed top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-container-max z-40 glass-card rounded-2xl flex flex-col items-center gap-6 py-8 font-headline font-semibold text-lg">
+<nav id="mobile-menu" class="hidden md:hidden fixed top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-container-max z-40 glass-card rounded-2xl flex flex-col items-center gap-6 py-8 font-headline font-semibold text-lg" aria-label="תפריט נייד">
 <a class="text-on-surface hover:text-secondary transition-colors" href="#about">אודות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="songs.html">יצירות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="#contact">קשר</a>
 <a class="bg-primary text-on-surface px-6 py-2 rounded-full font-bold" href="#contact">הזמינו שיר</a>
 </nav>
-<main>
+<main id="main-content" tabindex="-1" class="outline-none">
 <!-- Hero Section -->
 <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-gutter overflow-hidden hero-mesh pt-20">
 <div class="relative z-10 max-w-4xl">
-<span class="font-headline text-lg text-on-surface/60 uppercase mb-6 block tracking-widest bg-white/40 backdrop-blur-sm px-4 py-1 rounded-full w-fit mx-auto">סיפורים שהופכים לשירים</span>
+<span class="font-headline text-lg text-on-surface/80 uppercase mb-6 block tracking-widest bg-white/40 backdrop-blur-sm px-4 py-1 rounded-full w-fit mx-auto">סיפורים שהופכים לשירים</span>
 <h1 class="font-display text-7xl md:text-9xl mb-8 leading-tight text-on-surface">הסיפור שלכם.<br><span class="text-secondary italic">השירים שלי.</span></h1>
 <p class="font-body text-xl md:text-2xl text-on-surface/80 leading-relaxed mb-12 max-w-2xl mx-auto font-light">
                 יצירת שירים בהתאמה אישית משלב הרעיון והטקסט ועד למנגינה מושלמת.
@@ -170,7 +171,7 @@
                     התחילו יצירה משותפת
                 </a>
 <a class="text-on-surface flex items-center gap-2 font-headline font-bold hover:text-secondary transition-colors group" href="#showcase">
-                    גלו עוד עבודות <span class="material-symbols-outlined group-hover:translate-y-1 transition-transform">expand_more</span>
+                    גלו עוד עבודות <span class="material-symbols-outlined group-hover:translate-y-1 transition-transform" aria-hidden="true">expand_more</span>
 </a>
 </div>
 </div>
@@ -199,24 +200,24 @@
 <section class="py-section-gap px-gutter max-w-container-max mx-auto" id="showcase">
 <div class="flex flex-col md:flex-row justify-between items-baseline mb-20">
 <h2 class="font-display text-6xl text-on-surface mb-4">שירים שפורסמו</h2>
-<p class="text-on-surface/60 font-headline text-xl">יצירות מקוריות שלי, מילים ולחן, שיצאו כבר לעולם.</p>
+<p class="text-on-surface/80 font-headline text-xl">יצירות מקוריות שלי, מילים ולחן, שיצאו כבר לעולם.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 <!-- Published Song Card 1 -->
-<a href="song.html?slug=bazman-hazeh" class="glass-card rounded-xl overflow-hidden bubbly-hover group block">
-<div class="relative aspect-video bg-gradient-to-br from-primary/40 to-tertiary/40 flex items-center justify-center overflow-hidden">
-<img src="https://img.youtube.com/vi/HKfED172eFY/hqdefault.jpg" alt="בזמן הזה" class="absolute inset-0 w-full h-full object-cover">
+<a href="song.html?slug=shvil-chadash" class="glass-card rounded-xl overflow-hidden bubbly-hover group block">
+<div class="relative aspect-video bg-gradient-to-br from-secondary/40 to-tertiary/40 flex items-center justify-center overflow-hidden">
+<img src="https://img.youtube.com/vi/4IqNa8KKPpw/hqdefault.jpg" alt="שביל חדש" class="absolute inset-0 w-full h-full object-cover">
 <div class="absolute inset-0 bg-black/25"></div>
-<span class="relative material-symbols-outlined text-white text-6xl drop-shadow-lg group-hover:scale-110 transition-transform">smart_display</span>
+<span class="relative material-symbols-outlined text-white text-6xl drop-shadow-lg group-hover:scale-110 transition-transform" aria-hidden="true">smart_display</span>
 </div>
 <div class="p-6">
 <div class="flex flex-wrap gap-2 mb-3">
-<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">פולק</span>
-<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-primary/30 text-on-surface">רומנטי</span>
+<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">פופ</span>
+<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-primary/30 text-on-surface">מעורר השראה</span>
 </div>
-<h3 class="font-headline text-2xl mb-3 font-bold">בזמן הזה</h3>
+<h3 class="font-headline text-2xl mb-3 font-bold">שביל חדש</h3>
 <span class="inline-flex items-center gap-2 text-on-surface font-headline font-bold group-hover:text-secondary transition-colors">
-                    לצפייה ולפרטים <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    לצפייה ולפרטים <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
 </span>
 </div>
 </a>
@@ -234,7 +235,7 @@
 </div>
 <h3 class="font-headline text-2xl mb-3 font-bold">כל המשאלות שלי</h3>
 <span class="inline-flex items-center gap-2 text-on-surface font-headline font-bold group-hover:text-secondary transition-colors">
-                    לצפייה ולפרטים <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    לצפייה ולפרטים <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
 </span>
 </div>
 </a>
@@ -251,14 +252,14 @@
 </div>
 <h3 class="font-headline text-2xl mb-3 font-bold">חברות הכי טובות שלי</h3>
 <span class="inline-flex items-center gap-2 text-on-surface font-headline font-bold group-hover:text-secondary transition-colors">
-                    לצפייה ולפרטים <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    לצפייה ולפרטים <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
 </span>
 </div>
 </a>
 </div>
 <div class="text-center mt-12">
 <a href="songs.html" class="inline-flex items-center gap-2 text-on-surface font-headline font-bold hover:text-secondary transition-colors">
-                צפו בכל השירים בקטלוג <span class="material-symbols-outlined">arrow_back</span>
+                צפו בכל השירים בקטלוג <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
 </a>
 </div>
 </section>
@@ -358,21 +359,21 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
 <div class="p-10 rounded-xl glass-card bubbly-hover">
 <div class="w-24 h-24 mx-auto mb-8 flex items-center justify-center bg-secondary/20 rounded-full text-secondary">
-<span class="material-symbols-outlined text-5xl">favorite</span>
+<span class="material-symbols-outlined text-5xl" aria-hidden="true">favorite</span>
 </div>
 <h3 class="font-headline text-3xl mb-4 font-bold">חתונות וימי נישואין</h3>
 <p class="text-on-surface/70 text-lg">שיר מקורי שמספר את סיפור האהבה שלכם, מתאים לריקוד הראשון בחתונה או כמתנה ליום הנישואין.</p>
 </div>
 <div class="p-10 rounded-xl glass-card bubbly-hover">
 <div class="w-24 h-24 mx-auto mb-8 flex items-center justify-center bg-primary/20 rounded-full text-primary-dark">
-<span class="material-symbols-outlined text-5xl text-on-surface">auto_stories</span>
+<span class="material-symbols-outlined text-5xl text-on-surface" aria-hidden="true">auto_stories</span>
 </div>
 <h3 class="font-headline text-3xl mb-4 font-bold">שירי בר/בת מצווה ונקודות ציון</h3>
 <p class="text-on-surface/70 text-lg">שיר אישי לבר/בת מצווה, יום הולדת, סיום לימודים או פרישה - מתנה מרגשת שנשארת לתמיד.</p>
 </div>
 <div class="p-10 rounded-xl glass-card bubbly-hover">
 <div class="w-24 h-24 mx-auto mb-8 flex items-center justify-center bg-tertiary/20 rounded-full text-tertiary">
-<span class="material-symbols-outlined text-5xl">mic_external_on</span>
+<span class="material-symbols-outlined text-5xl" aria-hidden="true">mic_external_on</span>
 </div>
 <h3 class="font-headline text-3xl mb-4 font-bold">שיתופי פעולה לאמנים</h3>
 <p class="text-on-surface/70 text-lg">כתיבה והלחנה משותפת למוזיקאים ולזמרות עצמאיים, מהרעיון הראשוני ועד לשיר גמור ומוקלט.</p>
@@ -389,17 +390,17 @@
 <form class="space-y-10" id="contact-form">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
 <div class="space-y-2">
-<label class="font-headline font-bold text-sm uppercase tracking-widest px-4">שמכם</label>
-<input class="w-full bg-white/50 border-none rounded-full px-6 py-4 focus:ring-2 focus:ring-secondary transition-all outline-none" placeholder="איך לקרוא לכם?" type="text" name="name" required>
+<label class="font-headline font-bold text-sm uppercase tracking-widest px-4" for="contact-name">שמכם</label>
+<input id="contact-name" class="w-full bg-white/50 border-none rounded-full px-6 py-4 focus:ring-2 focus:ring-secondary transition-all outline-none" placeholder="איך לקרוא לכם?" type="text" name="name" required>
 </div>
 <div class="space-y-2">
-<label class="font-headline font-bold text-sm uppercase tracking-widest px-4">מספר טלפון</label>
-<input class="w-full bg-white/50 border-none rounded-full px-6 py-4 focus:ring-2 focus:ring-secondary transition-all outline-none" placeholder="איך ניצור איתך קשר?" type="tel" name="phone" required>
+<label class="font-headline font-bold text-sm uppercase tracking-widest px-4" for="contact-phone">מספר טלפון</label>
+<input id="contact-phone" class="w-full bg-white/50 border-none rounded-full px-6 py-4 focus:ring-2 focus:ring-secondary transition-all outline-none" placeholder="איך ניצור איתך קשר?" type="tel" name="phone" required>
 </div>
 </div>
 <div class="space-y-2">
-<label class="font-headline font-bold text-sm uppercase tracking-widest px-4">סוג הפרויקט</label>
-<select class="w-full bg-white/50 border-none rounded-full px-6 py-4 focus:ring-2 focus:ring-secondary transition-all outline-none appearance-none" name="project_type">
+<label class="font-headline font-bold text-sm uppercase tracking-widest px-4" for="contact-project-type">סוג הפרויקט</label>
+<select id="contact-project-type" class="w-full bg-white/50 border-none rounded-full px-6 py-4 focus:ring-2 focus:ring-secondary transition-all outline-none appearance-none" name="project_type">
 <option>שיר חתונה</option>
 <option>מחווה ליום נישואין</option>
 <option>שיתוף פעולה אמנותי</option>
@@ -407,11 +408,11 @@
 </select>
 </div>
 <div class="space-y-2">
-<label class="font-headline font-bold text-sm uppercase tracking-widest px-4">ספרו לי את הסיפור שלכם...</label>
-<textarea class="w-full bg-white/50 border-none rounded-3xl px-6 py-6 focus:ring-2 focus:ring-secondary transition-all outline-none resize-none" rows="5" name="message" required></textarea>
+<label class="font-headline font-bold text-sm uppercase tracking-widest px-4" for="contact-message">ספרו לי את הסיפור שלכם...</label>
+<textarea id="contact-message" class="w-full bg-white/50 border-none rounded-3xl px-6 py-6 focus:ring-2 focus:ring-secondary transition-all outline-none resize-none" rows="5" name="message" required></textarea>
 </div>
 <button class="w-full bg-on-surface text-white py-5 rounded-full font-headline text-xl font-bold hover:shadow-2xl transition-all flex items-center justify-center gap-3 group" type="submit">
-                    שליחה בוואטסאפ <span class="material-symbols-outlined group-hover:-translate-x-2 transition-transform">arrow_back</span>
+                    שליחה בוואטסאפ <span class="material-symbols-outlined group-hover:-translate-x-2 transition-transform" aria-hidden="true">arrow_back</span>
 </button>
 </form>
 </div>
@@ -422,10 +423,11 @@
 <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center">
 <div class="flex flex-col mb-12 md:mb-0 items-center md:items-start">
 <span class="font-display text-5xl text-secondary mb-2">ויקטוריה רוזן</span>
-<p class="text-on-surface/50 font-headline">© 2026 ויקטוריה רוזן. כל מילה ולחן כאן נכתבו באהבה, שיר אחר שיר.</p>
+<p class="text-on-surface/80 font-headline">© 2026 ויקטוריה רוזן. כל מילה ולחן כאן נכתבו באהבה, שיר אחר שיר.</p>
 </div>
 <div class="flex flex-wrap justify-center gap-10 font-headline font-bold text-lg">
-<a class="text-on-surface/60 hover:text-secondary transition-all" href="terms.html">תנאי שימוש</a>
+<a class="text-on-surface/80 hover:text-secondary transition-all" href="terms.html">תנאי שימוש</a>
+<a class="text-on-surface/80 hover:text-secondary transition-all" href="accessibility.html">הצהרת נגישות</a>
 </div>
 </div>
 </footer>
@@ -446,9 +448,13 @@
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
+            const target = document.querySelector(this.getAttribute('href'));
+            target.scrollIntoView({
                 behavior: 'smooth'
             });
+            if (target.hasAttribute('tabindex')) {
+                target.focus({ preventScroll: true });
+            }
         });
     });
 
@@ -459,11 +465,13 @@
         const isOpen = !mobileMenu.classList.contains('hidden');
         mobileMenu.classList.toggle('hidden');
         mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+        mobileMenuBtn.setAttribute('aria-label', isOpen ? 'פתיחת תפריט' : 'סגירת תפריט');
     });
     mobileMenu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             mobileMenu.classList.add('hidden');
             mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            mobileMenuBtn.setAttribute('aria-label', 'פתיחת תפריט');
         });
     });
 

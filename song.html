@@ -89,26 +89,27 @@
     }
 </style>
 </head><body class="font-body bg-background selection:bg-primary/30">
+<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[60] focus:bg-on-surface focus:text-white focus:px-6 focus:py-3 focus:rounded-full focus:font-headline focus:font-bold">דלגו לתוכן הראשי</a>
 <!-- TopAppBar -->
 <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] z-50 flex justify-between items-center px-4 md:px-8 h-16 max-w-container-max mx-auto glass-card rounded-full transition-all duration-300">
 <div class="flex items-center min-w-0">
     <a href="index.html" class="flex items-center gap-2 md:gap-3 min-w-0">
-    <img src="LOGO.png" alt="Logo Victoria Rosen" class="h-9 w-9 md:h-12 md:w-12 object-contain flex-shrink-0">
+    <img src="LOGO.png" alt="לוגו ויקטוריה רוזן" class="h-9 w-9 md:h-12 md:w-12 object-contain flex-shrink-0">
     <span class="font-display text-xl md:text-4xl text-on-surface font-bold whitespace-nowrap truncate">ויקטוריה רוזן</span>
     </a>
 </div>
-<nav class="hidden md:flex gap-8 items-center font-headline font-semibold">
+<nav class="hidden md:flex gap-8 items-center font-headline font-semibold" aria-label="ניווט ראשי">
 <a class="text-on-surface hover:text-secondary transition-colors" href="index.html#about">אודות</a>
-<a class="text-secondary transition-colors" href="songs.html">יצירות</a>
+<a class="text-on-surface underline underline-offset-4 decoration-2 decoration-secondary transition-colors" href="songs.html" aria-current="page">יצירות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="index.html#contact">קשר</a>
 </nav>
 <a href="index.html#contact" class="bg-primary text-on-surface px-3 md:px-6 py-2 rounded-full font-headline font-bold hover:shadow-lg transition-all active:scale-95 text-sm md:text-base whitespace-nowrap flex-shrink-0">
         הזמינו שיר
     </a>
 </header>
-<main class="pt-40 pb-section-gap px-gutter max-w-[900px] mx-auto">
-<a href="songs.html" class="inline-flex items-center gap-2 text-on-surface/60 hover:text-secondary font-headline font-bold mb-10 transition-colors">
-<span class="material-symbols-outlined">arrow_forward</span> חזרה לקטלוג
+<main id="main-content" tabindex="-1" class="outline-none pt-40 pb-section-gap px-gutter max-w-[900px] mx-auto">
+<a href="songs.html" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold mb-10 transition-colors">
+<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span> חזרה לקטלוג
 </a>
 <div id="song-content"></div>
 <div id="song-not-found" class="hidden text-center py-20">
@@ -122,10 +123,11 @@
 <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center">
 <div class="flex flex-col mb-12 md:mb-0 items-center md:items-start">
 <span class="font-display text-5xl text-secondary mb-2">ויקטוריה רוזן</span>
-<p class="text-on-surface/50 font-headline">© 2026 ויקטוריה רוזן. כל מילה ולחן כאן נכתבו באהבה, שיר אחר שיר.</p>
+<p class="text-on-surface/80 font-headline">© 2026 ויקטוריה רוזן. כל מילה ולחן כאן נכתבו באהבה, שיר אחר שיר.</p>
 </div>
 <div class="flex flex-wrap justify-center gap-10 font-headline font-bold text-lg">
-<a class="text-on-surface/60 hover:text-secondary transition-all" href="terms.html">תנאי שימוש</a>
+<a class="text-on-surface/80 hover:text-secondary transition-all" href="terms.html">תנאי שימוש</a>
+<a class="text-on-surface/80 hover:text-secondary transition-all" href="accessibility.html">הצהרת נגישות</a>
 </div>
 </div>
 </footer>
@@ -177,7 +179,7 @@
         document.getElementById('song-jsonld').textContent = JSON.stringify(jsonLd);
 
         const tagsHtml = song.tags.map(tag =>
-            `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-secondary">${tag}</span>`
+            `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">${tag}</span>`
         ).join('');
 
         let mediaHtml;
@@ -186,8 +188,8 @@
                 <div class="aspect-video rounded-xl overflow-hidden glass-card mb-4">
                     <iframe class="w-full h-full" src="https://www.youtube.com/embed/${song.youtubeId}" title="${song.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
-                <a href="https://www.youtube.com/watch?v=${song.youtubeId}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-on-surface/60 hover:text-secondary font-headline font-bold text-sm transition-colors">
-                    <span class="material-symbols-outlined text-lg">open_in_new</span> הסרטון לא נטען? צפו בו ישירות ביוטיוב
+                <a href="https://www.youtube.com/watch?v=${song.youtubeId}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold text-sm transition-colors">
+                    <span class="material-symbols-outlined text-lg" aria-hidden="true">open_in_new</span> הסרטון לא נטען? צפו בו ישירות ביוטיוב
                 </a>`;
         } else if (song.audioSrc) {
             mediaHtml = `
@@ -206,22 +208,22 @@
         } else {
             mediaHtml = `
                 <div class="aspect-video rounded-xl overflow-hidden glass-card flex flex-col items-center justify-center gap-3 bg-gradient-to-br ${song.thumbGradient}">
-                    <span class="material-symbols-outlined text-white text-6xl drop-shadow-lg">music_note</span>
+                    <span class="material-symbols-outlined text-white text-6xl drop-shadow-lg" aria-hidden="true">music_note</span>
                     <span class="font-headline text-white/90 font-bold">קטע ההאזנה יעלה בקרוב</span>
                 </div>`;
         }
 
         const performerHtml = song.performer
-            ? `<p class="font-headline text-on-surface/60 font-bold mb-4">בביצוע: ${song.performer}</p>`
+            ? `<p class="font-headline text-on-surface/80 font-bold mb-4">בביצוע: ${song.performer}</p>`
             : '';
 
         const creditsHtml = song.credits
-            ? `<p class="text-on-surface/50 text-sm font-headline mb-6">${song.credits}</p>`
+            ? `<p class="text-on-surface/80 text-sm font-headline mb-6">${song.credits}</p>`
             : '';
 
         const lyricsHtml = song.lyricsExcerpt
             ? `<div class="glass-card rounded-xl p-10 md:p-14 mb-12">
-                <span class="font-headline text-secondary mb-4 block font-bold uppercase tracking-widest text-sm">מילים</span>
+                <span class="font-headline text-on-surface mb-4 block font-bold uppercase tracking-widest text-sm">מילים</span>
                 <p class="font-headline text-2xl md:text-3xl leading-relaxed italic text-on-surface/90 whitespace-pre-line">${song.lyricsExcerpt}</p>
             </div>`
             : '';
@@ -238,7 +240,7 @@
                 <h2 class="font-display text-5xl mb-4">אהבתם? אפשר להזמין שיר בהשראה דומה</h2>
                 <p class="text-on-surface/70 text-lg mb-2">מחיר: ${song.priceNote}</p>
                 <a href="index.html#contact" class="inline-flex items-center gap-2 bg-on-surface text-white px-8 py-4 rounded-full font-headline text-lg font-bold hover:shadow-2xl transition-all mt-6">
-                    רוצה את השיר הזה <span class="material-symbols-outlined">arrow_back</span>
+                    רוצה את השיר הזה <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
                 </a>
             </div>
         `;

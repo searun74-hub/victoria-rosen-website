@@ -39,9 +39,44 @@
       "@type": "Service",
       "name": "כתיבת שירים בהתאמה אישית",
       "provider": { "@type": "Person", "name": "ויקטוריה רוזן" },
-      "areaServed": "IL",
+      "areaServed": { "@type": "City", "name": "ראשון לציון" },
       "description": "כתיבה והלחנה של שירים מקוריים לחתונות, ימי נישואין, מתנות לנקודות ציון, ושיתופי פעולה עם אמנים ומוזיקאים.",
       "serviceType": ["שירי חתונה", "שיר לריקוד ראשון", "מתנות לבר/בת מצווה", "שירי יום נישואין", "שירי ילדים", "שיתופי פעולה לאמנים"]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "האם השיר באמת מקורי, או מבוסס על תבנית קיימת?",
+          "acceptedAnswer": { "@type": "Answer", "text": "כל שיר אצלי הוא יצירה מקורית לחלוטין - מילים ולחן שנכתבים ומולחנים מאפס במיוחד עבורכם, ולא שיר קיים שעובר עיבוד. אתם מספרים לי את הסיפור, ואני הופכת אותו למילים ולמנגינה שנולדות במיוחד בשבילו." }
+        },
+        {
+          "@type": "Question",
+          "name": "איך מזמינים שיר אישי מותאם?",
+          "acceptedAnswer": { "@type": "Answer", "text": "ממלאים את טופס יצירת הקשר ומספרים לי את הסיפור שתרצו להנציח בשיר. אני חוזרת אליכם תוך 48 שעות, ומשם מתחילים לתכנן יחד את המילים והלחן." }
+        },
+        {
+          "@type": "Question",
+          "name": "כמה עולה שיר אישי?",
+          "acceptedAnswer": { "@type": "Answer", "text": "המחיר משתנה בהתאם למספר פרמטרים - אורך השיר, הסגנון המוזיקלי, והאם נדרשת הקלטה והפקה מלאה באולפן. אחרי שיחת היכרות קצרה אשלח הצעת מחיר מותאמת אישית לפרויקט שלכם." }
+        },
+        {
+          "@type": "Question",
+          "name": "אילו סוגי שירים אפשר להזמין?",
+          "acceptedAnswer": { "@type": "Answer", "text": "שירי חתונה וריקוד ראשון, מתנות לבר/בת מצווה, שירי יום נישואין, שירי ילדים, וגם שיתופי פעולה מוזיקליים לאמנים וזמרים עצמאיים - בעברית ובאנגלית כאחד." }
+        },
+        {
+          "@type": "Question",
+          "name": "איפה נמצא הסטודיו, ואפשר להיפגש באזור ראשון לציון?",
+          "acceptedAnswer": { "@type": "Answer", "text": "הסטודיו שלי נמצא בראשון לציון, ואפשר להגיע אליו לפגישת היכרות אישית. אם אתם גרים באזור אחר בארץ, אפשר לתכנן ואפילו להקליט את השיר מרחוק דרך שיחת וידאו." }
+        },
+        {
+          "@type": "Question",
+          "name": "מה הקשר בין ויקטוריה רוזן לפסטיבל מיליון קולות?",
+          "acceptedAnswer": { "@type": "Answer", "text": "אני משמשת כמנהלת מוזיקלית של פסטיבל מיליון קולות (Million Voices), שכבר יותר מ-11 שנים מזמין ילדים ובני נוער לעלות לבמה ולשיר שירים מקוריים שנכתבו במיוחד עבורם - חלק גדול מהם נכתבו על ידי." }
+        }
+      ]
     }
   ]
 }
@@ -130,6 +165,11 @@
         .hero-mesh { animation: none; }
         .bubbly-hover { transition: none; }
     }
+
+    /* Hide the browser's default disclosure marker on FAQ <details> - we draw our own arrow icon */
+    summary::-webkit-details-marker {
+        display: none;
+    }
 </style>
 </head><body class="font-body bg-background selection:bg-primary/30">
 <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[60] focus:bg-on-surface focus:text-white focus:px-6 focus:py-3 focus:rounded-full focus:font-headline focus:font-bold">דלגו לתוכן הראשי</a>
@@ -142,6 +182,7 @@
 <nav class="hidden md:flex gap-8 items-center font-headline font-semibold" aria-label="ניווט ראשי">
 <a class="text-on-surface hover:text-secondary transition-colors" href="#about">אודות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="songs.html">יצירות</a>
+<a class="text-on-surface hover:text-secondary transition-colors" href="#faq">שאלות נפוצות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="#contact">קשר</a>
 </nav>
 <a class="hidden md:inline-block bg-primary text-on-surface px-3 md:px-6 py-2 rounded-full font-headline font-bold hover:shadow-lg transition-all active:scale-95 text-sm md:text-base whitespace-nowrap flex-shrink-0" href="#contact">
@@ -155,6 +196,7 @@
 <nav id="mobile-menu" class="hidden md:hidden fixed top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-container-max z-40 glass-card rounded-2xl flex flex-col items-center gap-6 py-8 font-headline font-semibold text-lg" style="background-color: rgba(253, 252, 240, 0.98);" aria-label="תפריט נייד">
 <a class="text-on-surface hover:text-secondary transition-colors" href="#about">אודות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="songs.html">יצירות</a>
+<a class="text-on-surface hover:text-secondary transition-colors" href="#faq">שאלות נפוצות</a>
 <a class="text-on-surface hover:text-secondary transition-colors" href="#contact">קשר</a>
 <a class="bg-primary text-on-surface px-6 py-2 rounded-full font-bold" href="#contact">הזמינו שיר</a>
 </nav>
@@ -379,6 +421,57 @@
 <h3 class="font-headline text-3xl mb-4 font-bold">שיתופי פעולה לאמנים</h3>
 <p class="text-on-surface/70 text-lg">כתיבה והלחנה משותפת למוזיקאים ולזמרות עצמאיים, מהרעיון הראשוני ועד לשיר גמור ומוקלט.</p>
 </div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="py-16 md:py-section-gap px-gutter max-w-container-max mx-auto" id="faq">
+<div class="mb-10 md:mb-20 text-center">
+<h2 class="font-display text-6xl mb-4">שאלות נפוצות</h2>
+<p class="text-on-surface/70 text-xl font-light max-w-2xl mx-auto">כל מה שרציתם לדעת על הזמנת שיר אישי מותאם.</p>
+</div>
+<div class="max-w-3xl mx-auto space-y-4">
+<details class="glass-card rounded-xl p-6 md:p-8 group">
+<summary class="font-headline font-bold text-lg md:text-xl cursor-pointer list-none flex items-center justify-between gap-4">
+האם השיר באמת מקורי, או מבוסס על תבנית קיימת?
+<span class="material-symbols-outlined flex-shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
+</summary>
+<p class="text-on-surface/70 text-lg leading-relaxed mt-4">כל שיר אצלי הוא יצירה מקורית לחלוטין - מילים ולחן שנכתבים ומולחנים מאפס במיוחד עבורכם, ולא שיר קיים שעובר עיבוד. אתם מספרים לי את הסיפור, ואני הופכת אותו למילים ולמנגינה שנולדות במיוחד בשבילו.</p>
+</details>
+<details class="glass-card rounded-xl p-6 md:p-8 group">
+<summary class="font-headline font-bold text-lg md:text-xl cursor-pointer list-none flex items-center justify-between gap-4">
+איך מזמינים שיר אישי מותאם?
+<span class="material-symbols-outlined flex-shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
+</summary>
+<p class="text-on-surface/70 text-lg leading-relaxed mt-4">ממלאים את טופס יצירת הקשר ומספרים לי את הסיפור שתרצו להנציח בשיר. אני חוזרת אליכם תוך 48 שעות, ומשם מתחילים לתכנן יחד את המילים והלחן.</p>
+</details>
+<details class="glass-card rounded-xl p-6 md:p-8 group">
+<summary class="font-headline font-bold text-lg md:text-xl cursor-pointer list-none flex items-center justify-between gap-4">
+כמה עולה שיר אישי?
+<span class="material-symbols-outlined flex-shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
+</summary>
+<p class="text-on-surface/70 text-lg leading-relaxed mt-4">המחיר משתנה בהתאם למספר פרמטרים - אורך השיר, הסגנון המוזיקלי, והאם נדרשת הקלטה והפקה מלאה באולפן. אחרי שיחת היכרות קצרה אשלח הצעת מחיר מותאמת אישית לפרויקט שלכם.</p>
+</details>
+<details class="glass-card rounded-xl p-6 md:p-8 group">
+<summary class="font-headline font-bold text-lg md:text-xl cursor-pointer list-none flex items-center justify-between gap-4">
+אילו סוגי שירים אפשר להזמין?
+<span class="material-symbols-outlined flex-shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
+</summary>
+<p class="text-on-surface/70 text-lg leading-relaxed mt-4">שירי חתונה וריקוד ראשון, מתנות לבר/בת מצווה, שירי יום נישואין, שירי ילדים, וגם שיתופי פעולה מוזיקליים לאמנים וזמרים עצמאיים - בעברית ובאנגלית כאחד.</p>
+</details>
+<details class="glass-card rounded-xl p-6 md:p-8 group">
+<summary class="font-headline font-bold text-lg md:text-xl cursor-pointer list-none flex items-center justify-between gap-4">
+איפה נמצא הסטודיו, ואפשר להיפגש באזור ראשון לציון?
+<span class="material-symbols-outlined flex-shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
+</summary>
+<p class="text-on-surface/70 text-lg leading-relaxed mt-4">הסטודיו שלי נמצא בראשון לציון, ואפשר להגיע אליו לפגישת היכרות אישית. אם אתם גרים באזור אחר בארץ, אפשר לתכנן ואפילו להקליט את השיר מרחוק דרך שיחת וידאו.</p>
+</details>
+<details class="glass-card rounded-xl p-6 md:p-8 group">
+<summary class="font-headline font-bold text-lg md:text-xl cursor-pointer list-none flex items-center justify-between gap-4">
+מה הקשר בין ויקטוריה רוזן לפסטיבל מיליון קולות?
+<span class="material-symbols-outlined flex-shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
+</summary>
+<p class="text-on-surface/70 text-lg leading-relaxed mt-4">אני משמשת כמנהלת מוזיקלית של פסטיבל מיליון קולות (Million Voices), שכבר יותר מ-11 שנים מזמין ילדים ובני נוער לעלות לבמה ולשיר שירים מקוריים שנכתבו במיוחד עבורם - חלק גדול מהם נכתבו על ידי.</p>
+</details>
 </div>
 </section>
 <!-- Contact Section -->

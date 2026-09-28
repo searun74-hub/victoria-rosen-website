@@ -2,6 +2,34 @@
 // כדי להוסיף שיר חדש: הוסיפו אובייקט למערך. הוסיפו youtubeId ברגע שיש קישור אמיתי.
 const SONGS = [
   {
+    slug: 'agdal-lenaara',
+    title: 'אגדל לנערה',
+    performer: 'נועה רז',
+    tags: [],
+    credits: 'שיר מקורי עבור נועה רז. מילים: ירון קהלני. לחן: ויקטוריה סוקולובסקי-רוזן.',
+    blurb: 'שיר חדש ומרגש על גדילה, חלומות, גילוי עצמי והאומץ להקשיב לקול הפנימי - על הרגע שבו ילדה מתחילה לצמוח, לחלום ולגלות את הכוחות המיוחדים שבתוכה.',
+    lyricsExcerpt: 'יום בחיי\nגדול ומיוחד\nאני שתים עשרה שנים\nעולה, צומחת\nאגדל לנערה\n\nשלא תפחד לחלום\nלסלול דרכה\nלהבין ולגלות בי בכל יום\nעוד חוזקה\nעמוקה\nשלי\n\nNow, a new horizon\nhas suddenly opened.\nI, listen to the voice inside\nAnd hope that someday\nI\'ll reach it\n\nI\'ll try and answer every how and why\nNow what really matters is to follow my heart desires, and I will set it\nHigh, in the sky my heart now seems to reach.\nI\'m standing tall and growing strong with each\nSmall step\nBig leap\nI dream.',
+    youtubeId: 'AvcRH4oA6SQ',
+    audioSrc: null,
+    duration: null,
+    priceNote: 'לפי פנייה',
+    thumbGradient: 'from-tertiary/40 to-primary/40'
+  },
+  {
+    slug: 'od-shniya-nesicha',
+    title: 'עוד שנייה נסיכה',
+    performer: '', // TODO: לא זוהתה מבצעת בכותרת הסרטון, תוכלי להשלים
+    tags: [], // TODO: להוסיף תגיות ז'אנר/הקשר מתאימות
+    credits: 'שיר מקורי. מילים: ויקטוריה רוזן ומריה סוקולובסקי. לחן: ויקטוריה רוזן.',
+    blurb: 'שיר קסום על ילדה שחלומותיה מתגשמים לנגד עיניה, על פחדים שנשארים מאחור ועל האמונה שיום חדש מביא איתו קסם והתחלה.',
+    lyricsExcerpt: 'חלומות שלי\nאגדות שבי\nכל מה שפעם רציתי\nמתגשם כבר בי\nחלומות שבי\nהדרכים שלי\nשם אצעד\nעם בוא השמש יפתח לגבי\n\nאי שם לרגע הופכת הרוח שאותי מלטפת\nוהילדה כבר עוד שנייה נסיכה\nהפחדים שלי לא נוגעים כבר בי\nיום חדש את פני יאיר\nאמונה יביא',
+    youtubeId: '-2zLv_QR42M',
+    audioSrc: null,
+    duration: null,
+    priceNote: 'לפי פנייה',
+    thumbGradient: 'from-tertiary/40 to-secondary/40'
+  },
+  {
     slug: 'bazman-hazeh',
     title: 'בזמן הזה',
     performer: 'אגם דגוביץ',
@@ -28,20 +56,6 @@ const SONGS = [
     duration: null,
     priceNote: 'לפי פנייה',
     thumbGradient: 'from-secondary/40 to-primary/40'
-  },
-  {
-    slug: 'od-shniya-nesicha',
-    title: 'עוד שנייה נסיכה',
-    performer: '', // TODO: לא זוהתה מבצעת בכותרת הסרטון, תוכלי להשלים
-    tags: [], // TODO: להוסיף תגיות ז'אנר/הקשר מתאימות
-    credits: 'שיר מקורי. מילים: ויקטוריה רוזן ומריה סוקולובסקי. לחן: ויקטוריה רוזן.',
-    blurb: 'שיר קסום על ילדה שחלומותיה מתגשמים לנגד עיניה, על פחדים שנשארים מאחור ועל האמונה שיום חדש מביא איתו קסם והתחלה.',
-    lyricsExcerpt: 'חלומות שלי\nאגדות שבי\nכל מה שפעם רציתי\nמתגשם כבר בי\nחלומות שבי\nהדרכים שלי\nשם אצעד\nעם בוא השמש יפתח לגבי\n\nאי שם לרגע הופכת הרוח שאותי מלטפת\nוהילדה כבר עוד שנייה נסיכה\nהפחדים שלי לא נוגעים כבר בי\nיום חדש את פני יאיר\nאמונה יביא',
-    youtubeId: '-2zLv_QR42M',
-    audioSrc: null,
-    duration: null,
-    priceNote: 'לפי פנייה',
-    thumbGradient: 'from-tertiary/40 to-secondary/40'
   },
   {
     slug: 'madrega-acheret',

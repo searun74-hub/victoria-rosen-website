@@ -138,7 +138,11 @@
 </div>
 </div>
 </footer>
-<script src="songs-data.js"></script>
+<script>
+// songs-data.js מוגש ב-GitHub Pages עם מטמון של 4 שעות, ושיר חדש היה ממתין עד שיפוג.
+// הפרמטר מתחלף כל 5 דקות: עדכון מופיע מהר, והמטמון עדיין עובד בתוך החלון.
+document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 300000) + '"><\/scr' + 'ipt>');
+</script>
 <script>
     // Header Scroll Effect
     window.addEventListener('scroll', () => {

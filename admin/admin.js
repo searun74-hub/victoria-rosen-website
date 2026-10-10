@@ -612,7 +612,7 @@ $('song-form').addEventListener('submit', async e => {
     if (state.lastWarning) { banner('info', esc(state.lastWarning)); return; }
     banner('ok', (existing ? 'השינויים נשמרו' : 'השיר "' + esc(title) + '" עלה לאתר') +
       '. אפשר לראות אותו כאן: <a class="underline" target="_blank" href="../song.html?slug=' +
-      encodeURIComponent(slug) + '">' + esc(title) + '</a> — ייתכן שייקח עד דקה עד שיופיע.');
+      encodeURIComponent(slug) + '">' + esc(title) + '</a> — ייתכן שייקח כמה דקות עד שיופיע.');
   } catch (e3) {
     err.textContent = e3.message;
   } finally {

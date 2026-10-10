@@ -157,6 +157,10 @@ document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60
         }
     });
 
+    // כל טקסט של שיר מגיע מדף הניהול, ולכן מסוננים אותו לפני שמזריקים ל-HTML.
+    const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g,
+      c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
     // Hidden songs (hidden: true) never appear on the site.
     const VISIBLE_SONGS = SONGS.filter(s => !s.hidden);
 
@@ -164,18 +168,18 @@ document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60
     const grid = document.getElementById('songs-grid');
     grid.innerHTML = VISIBLE_SONGS.map(song => `
         <a href="song.html?slug=${encodeURIComponent(song.slug)}" class="glass-card rounded-xl overflow-hidden bubbly-hover group block">
-            <div class="relative aspect-video bg-gradient-to-br ${song.thumbGradient} flex items-center justify-center overflow-hidden">
+            <div class="relative aspect-video bg-gradient-to-br ${esc(song.thumbGradient)} flex items-center justify-center overflow-hidden">
                 ${song.youtubeId
-                    ? `<img src="https://img.youtube.com/vi/${song.youtubeId}/hqdefault.jpg" alt="${song.title}" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-black/25"></div>`
-                    : (song.coverImage ? `<img src="${song.coverImage}" alt="${song.title}" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-black/15"></div>` : '')}
+                    ? `<img src="https://img.youtube.com/vi/${esc(song.youtubeId)}/hqdefault.jpg" alt="${esc(song.title)}" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-black/25"></div>`
+                    : (song.coverImage ? `<img src="${esc(song.coverImage)}" alt="${esc(song.title)}" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-black/15"></div>` : '')}
                 <span class="relative material-symbols-outlined text-white text-6xl drop-shadow-lg group-hover:scale-110 transition-transform" aria-hidden="true">${song.youtubeId ? 'smart_display' : (song.coverImage ? 'play_circle' : 'music_note')}</span>
             </div>
             <div class="p-6">
                 <div class="flex flex-wrap gap-2 mb-3">
-                    ${song.tags.map(tag => `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">${tag}</span>`).join('')}
+                    ${song.tags.map(tag => `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">${esc(tag)}</span>`).join('')}
                 </div>
-                <h3 class="font-headline text-2xl mb-2 font-bold">${song.title}</h3>
-                <p class="text-on-surface/80 text-sm">${song.blurb}</p>
+                <h3 class="font-headline text-2xl mb-2 font-bold">${esc(song.title)}</h3>
+                <p class="text-on-surface/80 text-sm">${esc(song.blurb)}</p>
             </div>
         </a>
     `).join('');

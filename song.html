@@ -153,6 +153,10 @@ document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60
         }
     });
 
+    // כל טקסט של שיר מגיע מדף הניהול, ולכן מסוננים אותו לפני שמזריקים ל-HTML.
+    const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g,
+      c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
     // Hidden songs (hidden: true) never appear on the site.
     const VISIBLE_SONGS = SONGS.filter(s => !s.hidden);
 
@@ -177,8 +181,8 @@ document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60
         document.getElementById('og-url').setAttribute('content', pageUrl);
 
         const imageUrl = song.youtubeId
-            ? `https://img.youtube.com/vi/${song.youtubeId}/hqdefault.jpg`
-            : (song.coverImage ? `https://rozenmusic.co.il/${song.coverImage}` : 'https://rozenmusic.co.il/victoria.jpeg');
+            ? `https://img.youtube.com/vi/${esc(song.youtubeId)}/hqdefault.jpg`
+            : (song.coverImage ? `https://rozenmusic.co.il/${esc(song.coverImage)}` : 'https://rozenmusic.co.il/victoria.jpeg');
         document.getElementById('og-image').setAttribute('content', imageUrl);
         document.getElementById('twitter-image').setAttribute('content', imageUrl);
 
@@ -206,59 +210,59 @@ document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60
                 'name': song.title,
                 'description': song.blurb,
                 'thumbnailUrl': imageUrl,
-                'embedUrl': `https://www.youtube.com/embed/${song.youtubeId}`,
-                'contentUrl': `https://www.youtube.com/watch?v=${song.youtubeId}`
+                'embedUrl': `https://www.youtube.com/embed/${esc(song.youtubeId)}`,
+                'contentUrl': `https://www.youtube.com/watch?v=${esc(song.youtubeId)}`
             });
         }
         document.getElementById('song-jsonld').textContent = JSON.stringify(jsonLdList);
 
         const tagsHtml = song.tags.map(tag =>
-            `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">${tag}</span>`
+            `<span class="font-headline text-xs font-bold px-3 py-1 rounded-full bg-secondary/20 text-on-surface">${esc(tag)}</span>`
         ).join('');
 
         let mediaHtml;
         if (song.youtubeId) {
             mediaHtml = `
                 <div class="aspect-video rounded-xl overflow-hidden glass-card mb-4">
-                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/${song.youtubeId}" title="${song.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/${esc(song.youtubeId)}" title="${esc(song.title)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
-                <a href="https://www.youtube.com/watch?v=${song.youtubeId}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold text-sm transition-colors">
+                <a href="https://www.youtube.com/watch?v=${esc(song.youtubeId)}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold text-sm transition-colors">
                     <span class="material-symbols-outlined text-lg" aria-hidden="true">open_in_new</span> הסרטון לא נטען? צפו בו ישירות ביוטיוב
                 </a>`;
         } else if (song.audioSrc) {
             mediaHtml = `
                 <div class="relative aspect-video rounded-xl overflow-hidden glass-card flex items-end ${song.coverImage ? '' : 'bg-gradient-to-br ' + song.thumbGradient}">
-                    ${song.coverImage ? `<img src="${song.coverImage}" alt="${song.title}" class="absolute inset-0 w-full h-full object-cover">` : ''}
+                    ${song.coverImage ? `<img src="${esc(song.coverImage)}" alt="${esc(song.title)}" class="absolute inset-0 w-full h-full object-cover">` : ''}
                     <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"></div>
                     <div class="relative w-full p-4 md:p-6">
-                        <audio controls class="w-full" src="${song.audioSrc}">הדפדפן שלך לא תומך בנגן אודיו.</audio>
+                        <audio controls class="w-full" src="${esc(song.audioSrc)}">הדפדפן שלך לא תומך בנגן אודיו.</audio>
                     </div>
                 </div>`;
         } else if (song.coverImage) {
             mediaHtml = `
                 <div class="aspect-video rounded-xl overflow-hidden glass-card">
-                    <img src="${song.coverImage}" alt="${song.title}" class="w-full h-full object-cover">
+                    <img src="${esc(song.coverImage)}" alt="${esc(song.title)}" class="w-full h-full object-cover">
                 </div>`;
         } else {
             mediaHtml = `
-                <div class="aspect-video rounded-xl overflow-hidden glass-card flex flex-col items-center justify-center gap-3 bg-gradient-to-br ${song.thumbGradient}">
+                <div class="aspect-video rounded-xl overflow-hidden glass-card flex flex-col items-center justify-center gap-3 bg-gradient-to-br ${esc(song.thumbGradient)}">
                     <span class="material-symbols-outlined text-white text-6xl drop-shadow-lg" aria-hidden="true">music_note</span>
                     <span class="font-headline text-white/90 font-bold">קטע ההאזנה יעלה בקרוב</span>
                 </div>`;
         }
 
         const performerHtml = song.performer
-            ? `<p class="font-headline text-on-surface/80 font-bold mb-4">בביצוע: ${song.performer}</p>`
+            ? `<p class="font-headline text-on-surface/80 font-bold mb-4">בביצוע: ${esc(song.performer)}</p>`
             : '';
 
         const creditsHtml = song.credits
-            ? `<p class="text-on-surface/80 text-sm font-headline mb-6">${song.credits}</p>`
+            ? `<p class="text-on-surface/80 text-sm font-headline mb-6">${esc(song.credits)}</p>`
             : '';
 
         const lyricsHtml = song.lyricsExcerpt
             ? `<div class="glass-card rounded-xl p-10 md:p-14 mb-12">
                 <span class="font-headline text-on-surface mb-4 block font-bold uppercase tracking-widest text-sm">מילים</span>
-                <p class="font-headline text-2xl md:text-3xl leading-relaxed italic text-on-surface/90 whitespace-pre-line" dir="auto">${song.lyricsExcerpt}</p>
+                <p class="font-headline text-2xl md:text-3xl leading-relaxed italic text-on-surface/90 whitespace-pre-line" dir="auto">${esc(song.lyricsExcerpt)}</p>
             </div>`
             : '';
 
@@ -286,15 +290,15 @@ document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60
 
         contentEl.innerHTML = `
             <div class="flex flex-wrap gap-2 mb-4">${tagsHtml}</div>
-            <h1 class="font-display text-6xl md:text-7xl mb-2 leading-tight">${song.title}</h1>
+            <h1 class="font-display text-6xl md:text-7xl mb-2 leading-tight">${esc(song.title)}</h1>
             ${performerHtml}
             ${creditsHtml}
-            <p class="text-on-surface/70 text-xl leading-relaxed mb-10 max-w-2xl">${song.blurb}</p>
+            <p class="text-on-surface/70 text-xl leading-relaxed mb-10 max-w-2xl">${esc(song.blurb)}</p>
             <div class="mb-12">${mediaHtml}</div>
             ${lyricsHtml}
             <div class="glass-card soft-gradient rounded-xl p-10 md:p-14 text-center">
                 <h2 class="font-display text-5xl mb-4">אהבתם? אפשר להזמין שיר בהשראה דומה</h2>
-                <p class="text-on-surface/70 text-lg mb-2">מחיר: ${song.priceNote}</p>
+                <p class="text-on-surface/70 text-lg mb-2">מחיר: ${esc(song.priceNote)}</p>
                 <a href="index.html#contact" class="inline-flex items-center gap-2 bg-on-surface text-white px-8 py-4 rounded-full font-headline text-lg font-bold hover:shadow-2xl transition-all mt-6">
                     רוצה את השיר הזה <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
                 </a>

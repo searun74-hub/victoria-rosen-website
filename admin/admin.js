@@ -369,25 +369,79 @@ function renderTags() {
   const all = new Set(BASE_TAGS);
   state.songs.forEach(s => (s.tags || []).forEach(t => all.add(t)));
   state.tags.forEach(t => all.add(t));
-  $('tag-chips').innerHTML = [...all].map(t =>
-    '<button type="button" class="chip ' + (state.tags.includes(t) ? 'on' : '') + '" data-tag="' + esc(t) + '">' +
-    esc(t) + '</button>').join('');
+
+  $('tag-chips').innerHTML = [...all].map(t => {
+    const on = state.tags.includes(t);
+    // תגיות הבית תמיד קיימות, ולכן אין טעם להציע למחוק אותן — הן יחזרו.
+    const removable = !BASE_TAGS.includes(t);
+    return '<span class="tagchip' + (on ? ' on' : '') + '">' +
+      '<button type="button" class="lbl" data-tag="' + esc(t) + '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+        '<span class="tick" aria-hidden="true">✓</span>' + esc(t) +
+      '</button>' +
+      (removable
+        ? '<button type="button" class="del" data-del="' + esc(t) + '" title="מחיקת התגית" ' +
+          'aria-label="מחיקת התגית ' + esc(t) + '">✕</button>'
+        : '') +
+    '</span>';
+  }).join('');
 }
 
 $('tag-chips').addEventListener('click', e => {
+  const del = e.target.closest('button[data-del]');
+  if (del) { deleteTag(del.dataset.del); return; }
+
   const btn = e.target.closest('button[data-tag]');
   if (!btn) return;
   const t = btn.dataset.tag;
-  state.tags = state.tags.includes(t) ? state.tags.filter(x => x !== t) : state.tags.concat([t]);
-  renderTags(); refreshPreview();
+  const on = !state.tags.includes(t);
+  state.tags = on ? state.tags.concat([t]) : state.tags.filter(x => x !== t);
+  // מחליפים מצב על הצ'יפ עצמו במקום לבנות מחדש את כל השורה — כך הצ'יפים
+  // לא קופצים תחת העכבר באמצע בחירה של כמה תגיות ברצף.
+  btn.closest('.tagchip').classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  refreshPreview(); saveDraft();
 });
+
+/* מחיקת תגית מהרשימה. אם היא כבר משויכת לשירים, היא תוסר מכולם —
+   אחרת היא פשוט תחזור לרשימה בפעם הבאה שהדף ייטען. */
+async function deleteTag(t) {
+  const used = state.songs.filter(s => (s.tags || []).includes(t));
+
+  if (used.length) {
+    const names = used.slice(0, 3).map(s => '"' + s.title + '"').join(', ');
+    const ok = await confirmDialog('למחוק את התגית "' + t + '"?',
+      'היא מופיעה ב-' + used.length + ' שירים (' + names +
+      (used.length > 3 ? ' ועוד' : '') + ') ותוסר מכולם. השירים עצמם לא ישתנו.',
+      'מחיקת התגית');
+    if (!ok) return;
+
+    const before = state.songs;
+    state.songs = state.songs.map(s =>
+      (s.tags || []).includes(t) ? Object.assign({}, s, { tags: s.tags.filter(x => x !== t) }) : s);
+    busy('מוחק את התגית מכל השירים…');
+    try {
+      await publishSongs('מחיקת התגית ' + t);
+    } catch (err) {
+      state.songs = before;
+      $('form-error').textContent = err.message;
+      unbusy();
+      return;
+    }
+    unbusy();
+  }
+
+  state.tags = state.tags.filter(x => x !== t);
+  renderTags(); refreshPreview(); saveDraft();
+}
 
 function addTag() {
   const t = $('f-newtag').value.trim();
   if (!t) return;
+  if (t.length > 60) { $('form-error').textContent = 'התגית ארוכה מדי.'; return; }
   if (!state.tags.includes(t)) state.tags.push(t);
   $('f-newtag').value = '';
-  renderTags(); refreshPreview();
+  $('form-error').textContent = '';
+  renderTags(); refreshPreview(); saveDraft();
 }
 $('btn-addtag').addEventListener('click', addTag);
 $('f-newtag').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } });

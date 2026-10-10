@@ -34,7 +34,20 @@
   .btn-danger:hover { background:rgba(185,28,28,.07); }
   .chip { border-radius:9999px; padding:.35rem .9rem; font-size:.85rem; font-weight:700;
     font-family:Heebo,sans-serif; border:1px solid rgba(45,52,54,.15); background:#fff; cursor:pointer; }
-  .chip.on { background:#f3a683; border-color:#f3a683; }
+  .chip.on { background:#f3a683; border-color:#e08f6b; }
+  /* צ'יפ תגית בטופס: תווית שאפשר לבחור, ולצידה מחיקה */
+  .tagchip { display:inline-flex; align-items:stretch; border-radius:9999px;
+    border:1px solid rgba(45,52,54,.15); background:#fff; overflow:hidden;
+    font-family:Heebo,sans-serif; font-size:.85rem; font-weight:700; }
+  .tagchip button { background:none; border:0; cursor:pointer; font:inherit; color:inherit; }
+  .tagchip .lbl { padding:.35rem .9rem; }
+  .tagchip .del { padding:.35rem .6rem; opacity:.45; line-height:1;
+    border-inline-start:1px solid rgba(45,52,54,.15); }
+  .tagchip .del:hover { opacity:1; background:rgba(185,28,28,.12); color:#b91c1c; }
+  .tagchip.on { background:#f3a683; border-color:#e08f6b; box-shadow:inset 0 0 0 1px #e08f6b; }
+  .tagchip.on .del { border-inline-start-color:rgba(45,52,54,.2); }
+  .tagchip .tick { display:none; margin-inline-end:.25rem; font-weight:900; }
+  .tagchip.on .tick { display:inline; }
   .spin { animation:sp 1s linear infinite; display:inline-block; }
   @keyframes sp { to { transform:rotate(360deg); } }
   .dropzone { border:2px dashed rgba(45,52,54,.2); border-radius:1rem; padding:2rem 1rem;
@@ -135,7 +148,8 @@
           <textarea id="f-credits" class="field" rows="2" placeholder="מילים, לחן, הפקה, הקלטה — למי שרלוונטי"></textarea>
         </div>
         <div>
-          <span class="font-headline font-bold block mb-2">תגיות</span>
+          <span class="font-headline font-bold block mb-1">תגיות</span>
+          <p class="text-xs text-on-surface/50 mb-3 font-headline">אפשר לבחור כמה שרוצים — לחיצה נוספת מבטלת. ה-✕ מוחק את התגית מהרשימה.</p>
           <div id="tag-chips" class="flex flex-wrap gap-2 mb-3"></div>
           <div class="flex gap-2">
             <input id="f-newtag" class="field" type="text" placeholder="תגית חדשה" autocomplete="off">
@@ -220,6 +234,6 @@
   <p class="font-headline text-on-surface/60 mt-2">אפשר לחכות כאן, זה לוקח כמה שניות.</p>
 </div>
 
-<script src="config.js?v=5"></script>
-<script src="admin.js?v=5"></script>
+<script src="config.js?v=7"></script>
+<script src="admin.js?v=7"></script>
 </body></html>

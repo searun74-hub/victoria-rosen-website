@@ -229,17 +229,18 @@ function renderList() {
     if (song.audioSrc) badges.push('<span class="chip" ' + quiet + '>MP3</span>');
     if (!song.youtubeId && !song.audioSrc) badges.push('<span class="chip" ' + quiet + '>בלי האזנה</span>');
     if (!tags.length) badges.push('<span class="chip" ' + quiet + '>בלי תגיות</span>');
-    if (song.hidden) badges.push('<span class="chip" style="background:rgba(45,52,54,.12)">מוסתר</span>');
+    if (song.hidden) badges.push('<span class="chip" style="background:#2d3436;color:#fff;border-color:#2d3436">מוסתר</span>');
 
-    return '<div class="glass-card rounded-xl p-4 flex items-center gap-4 flex-wrap ' +
-      (song.hidden ? 'opacity-60' : '') + '">' +
+    return '<div class="glass-card rounded-xl p-4 flex items-center gap-4 flex-wrap"' +
+      (song.hidden ? ' style="background:rgba(45,52,54,.07)"' : '') + '>' +
       '<div class="w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br ' + esc(song.thumbGradient || GRADIENTS[0]) +
         ' flex items-center justify-center">' +
         (thumb ? '<img src="' + esc(thumb) + '" alt="" class="w-full h-full object-cover">'
                : '<span class="material-symbols-outlined text-white/90" aria-hidden="true">music_note</span>') +
       '</div>' +
       '<div class="flex-1 min-w-[10rem]">' +
-        '<div class="font-headline font-bold text-lg">' + esc(song.title) + '</div>' +
+        '<div class="font-headline font-bold text-lg' + (song.hidden ? ' text-on-surface/50' : '') + '">' +
+          esc(song.title) + '</div>' +
         (song.performer ? '<div class="text-on-surface/60 text-sm">' + esc(song.performer) + '</div>' : '') +
         '<div class="flex flex-wrap gap-1 mt-2">' + tags.join('') + badges.join('') + '</div>' +
       '</div>' +
@@ -251,8 +252,9 @@ function renderList() {
           (i === state.songs.length - 1 ? 'disabled style="opacity:.3"' : '') + '>' +
           '<span class="material-symbols-outlined text-lg" aria-hidden="true">keyboard_arrow_down</span></button>' +
         '<button class="btn btn-ghost text-sm" data-act="edit" data-i="' + i + '">עריכה</button>' +
-        '<button class="btn btn-ghost text-sm" data-act="hide" data-i="' + i + '">' +
-          (song.hidden ? 'הצגה' : 'הסתרה') + '</button>' +
+        '<button class="btn text-sm ' + (song.hidden ? 'btn-primary !px-4 !py-2' : 'btn-ghost') +
+          '" data-act="hide" data-i="' + i + '">' +
+          (song.hidden ? 'החזרה לאתר' : 'הסתרה') + '</button>' +
         '<button class="btn btn-danger text-sm" data-act="del" data-i="' + i + '">מחיקה</button>' +
       '</div>' +
     '</div>';

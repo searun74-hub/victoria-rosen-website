@@ -6,7 +6,9 @@ const SONGS = [
     "slug": "agdal-lenaara",
     "title": "אגדל לנערה",
     "performer": "נועה רז",
-    "tags": [],
+    "tags": [
+      "שיר בת מצווה"
+    ],
     "credits": "שיר מקורי עבור נועה רז. מילים: ירון קהלני. לחן: ויקטוריה סוקולובסקי-רוזן.",
     "blurb": "שיר חדש ומרגש על גדילה, חלומות, גילוי עצמי והאומץ להקשיב לקול הפנימי - על הרגע שבו ילדה מתחילה לצמוח, לחלום ולגלות את הכוחות המיוחדים שבתוכה.",
     "lyricsExcerpt": "יום בחיי\nגדול ומיוחד\nאני שתים עשרה שנים\nעולה, צומחת\nאגדל לנערה\n\nשלא תפחד לחלום\nלסלול דרכה\nלהבין ולגלות בי בכל יום\nעוד חוזקה\nעמוקה\nשלי\n\nNow, a new horizon\nhas suddenly opened.\nI, listen to the voice inside\nAnd hope that someday\nI'll reach it\n\nI'll try and answer every how and why\nNow what really matters is to follow my heart desires, and I will set it\nHigh, in the sky my heart now seems to reach.\nI'm standing tall and growing strong with each\nSmall step\nBig leap\nI dream.",

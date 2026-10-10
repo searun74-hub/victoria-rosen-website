@@ -1,0 +1,16 @@
+name = "rozenmusic-admin"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# ה-Worker מתארח על כתובת workers.dev משלו. לא נוגעים ב-DNS של האתר.
+workers_dev = true
+
+[vars]
+GITHUB_REPO = "searun74-hub/victoria-rosen-website"
+GITHUB_BRANCH = "master"
+ADMIN_URL = "https://rozenmusic.co.il/admin/"
+
+# את הערך הזה ממלאים אחרי רישום אפליקציית ה-OAuth ב-GitHub (שלב 4 במדריך).
+# ה-Client ID אינו סוד ולכן הוא יושב כאן. ה-Client Secret נכנס בנפרד:
+#   npx wrangler secret put GITHUB_CLIENT_SECRET
+GITHUB_CLIENT_ID = "Ov23liXhHljEo1zy3NIg"

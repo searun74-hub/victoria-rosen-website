@@ -1,133 +1,160 @@
 # הקמת דף הניהול — מדריך הפעלה חד־פעמי
 
-המדריך הזה מיועד לך, בעל האתר. אחרי שתסיים אותו, המשתמש הנוסף נכנס ל-`rozenmusic.co.il/admin/`,
-מקבל קוד למייל, ומעלה שירים לבד. אתה לא צריך לעשות שום דבר נוסף.
+המדריך הזה מיועד לך, בעל האתר. בסוף התהליך המשתמש נכנס ל-`rozenmusic.co.il/admin/`,
+לוחץ "התחברות עם GitHub", ומעלה שירים לבד.
 
-**זמן משוער:** 30-40 דקות. **עלות:** אפס — הכל במסלולים החינמיים.
+**זמן:** כחצי שעה. **עלות:** אפס. **לא נוגעים ב-DNS ולא בדומיין.**
 
 ## איך זה עובד
 
 ```
-המשתמש → rozenmusic.co.il/admin/ → Cloudflare Access (מי מורשה להיכנס?)
-                                         ↓ עבר
-                                    דף הניהול
-                                         ↓ שולח בקשה ל-/api
-                                    Worker (מחזיק את טוקן GitHub, יודע לגעת רק בשירים)
+המשתמש → rozenmusic.co.il/admin/ → "התחברות עם GitHub"
                                          ↓
-                                    קומיט ב-GitHub → האתר מתעדכן
+                                    GitHub מאשר מי הוא
+                                         ↓
+                      Worker בודק: יש לו הרשאת כתיבה לריפו?
+                                         ↓ כן
+                               דף הניהול נפתח, הוא מפרסם
+                                         ↓
+                        קומיט ב-GitHub על שמו → האתר מתעדכן
 ```
 
-שתי נקודות שחשוב להבין:
+שלוש נקודות שחשוב להבין:
 
-1. **הטוקן של GitHub אף פעם לא מגיע לדפדפן של המשתמש.** הוא יושב ב-Worker.
-2. **ה-Worker יודע לעשות שלושה דברים בלבד** — לקרוא את `songs-data.js`, לכתוב אותו, ולהעלות
-   קובץ לתיקיות `audio/` או `covers/`. אין לו דרך לגעת בדף הבית, במספר הוואטסאפ או בכל קובץ אחר.
-   זה נאכף בקוד ה-Worker עצמו, לא בהגדרות.
+1. **GitHub הוא מערכת ההרשאות.** מי שהוא collaborator בריפו יכול לפרסם, מי שלא — לא נכנס.
+   אין רשימת מורשים לתחזק ואין סיסמאות.
+2. **אין טוקן שמור בשום מקום.** הפרסום מתבצע עם ההרשאה האישית של המשתמש, שפגה לבד.
+3. **ה-Worker יודע לעשות שלושה דברים בלבד** — לקרוא את `songs-data.js`, לכתוב אותו, ולהעלות
+   קובץ ל-`audio/` או ל-`covers/`. זה נאכף בקוד שלו, לא בהגדרות.
 
-## שלב 1 — טוקן GitHub
+---
 
-1. היכנס ל-https://github.com/settings/personal-access-tokens/new
-2. **Token name:** `rozenmusic-admin`
-3. **Expiration:** שנה (רשום לעצמך תזכורת לחדש)
-4. **Repository access:** בחר **Only select repositories** → `searun74-hub/victoria-rosen-website`
-5. **Permissions** → Repository permissions → **Contents** → בחר **Read and write**.
-   אל תיתן שום הרשאה אחרת.
-6. צור את הטוקן והעתק אותו. הוא מוצג **פעם אחת בלבד** — שמור אותו זמנית במקום בטוח.
+## שלב 1 — הרשאה למשתמש
 
-## שלב 2 — העברת ה-DNS ל-Cloudflare
+1. המשתמש פותח חשבון חינמי ב-https://github.com/signup ושולח לך את שם המשתמש שלו.
+2. אתה: הריפו → **Settings** → **Collaborators** → **Add people** → שם המשתמש → **Add to this repository**
 
-האתר נשאר ב-GitHub Pages. Cloudflare רק יושב לפניו.
+> במאגר אישי אין בחירת רמת הרשאה — collaborator פירושו הרשאת כתיבה, וזה מה שצריך.
+> ההזמנה מגיעה למייל שלו ופגה אחרי 7 ימים. אחרי שהוא מאשר, הוא מופיע ברשימה בלי "Pending".
 
-1. פתח חשבון חינמי ב-https://dash.cloudflare.com
-2. **Add a site** → `rozenmusic.co.il` → בחר את המסלול **Free**
-3. Cloudflare יסרוק את רשומות ה-DNS הקיימות. ודא שכל הרשומות של GitHub Pages הועתקו
-   (ארבע רשומות `A` ל-`185.199.108-111.153`, ורשומת `CNAME` ל-`www`).
-4. Cloudflare ייתן לך **שני שרתי שמות** (nameservers). היכנס לספק שבו קנית את הדומיין
-   והחלף שם את שרתי השמות לאלה. זה השלב היחיד שמתבצע מחוץ ל-Cloudflare.
-5. ההחלפה לוקחת בין כמה דקות לכמה שעות. Cloudflare ישלח מייל כשזה פעיל.
-6. אחרי שזה פעיל: **SSL/TLS** → **Overview** → ודא שהמצב הוא **Full (strict)**.
-7. **SSL/TLS** → **Edge Certificates** → הפעל **Always Use HTTPS**.
+**לבטל גישה בעתיד:** אותו מסך, לוחצים על ה-X לידו. מיידי.
 
-> בזמן ההעברה האתר ממשיך לעבוד. אין downtime.
+---
 
-## שלב 3 — הגדרת Cloudflare Access
+## שלב 2 — פריסה ראשונה של ה-Worker
 
-כאן קובעים מי בכלל מורשה להיכנס לדף הניהול.
-
-1. בתפריט הצד: **Zero Trust**. בפעם הראשונה הוא יבקש לבחור שם צוות (team name) —
-   בחר משהו כמו `rozenmusic`. **שמור את השם הזה**, הוא נדרש בשלב הבא.
-   בחר את המסלול **Free** (עד 50 משתמשים).
-2. **Access** → **Applications** → **Add an application** → **Self-hosted**
-3. **Application name:** `ניהול שירים`
-4. **Session Duration:** 24 שעות (או פחות, לטעמך)
-5. **Public hostname** — הוסף **שתי** רשומות:
-   - `rozenmusic.co.il` + path `admin`
-   - `rozenmusic.co.il` + path `api`
-
-   אם הגרסה שלך לא מאפשרת שתי רשומות באותה אפליקציה, צור אפליקציה שנייה זהה עבור `api`.
-   במקרה כזה יהיו לך שני ערכי AUD — ראה הערה בשלב 4.
-6. **Policies** → **Add a policy**:
-   - **Policy name:** `מורשים`
-   - **Action:** Allow
-   - **Include** → **Emails** → הזן את כתובת המייל שלך ואת של המשתמש הנוסף
-7. שמור. אחרי השמירה, פתח את האפליקציה שוב והעתק את ה-**Application Audience (AUD) Tag**
-   מלשונית Overview. זו מחרוזת ארוכה של אותיות ומספרים.
-
-**לשנות מי מורשה בעתיד:** אותו מסך, עריכת ה-policy. הסרה של מייל נכנסת לתוקף מיד.
-**לראות מי נכנס:** Zero Trust → **Logs** → **Access**.
-
-## שלב 4 — פריסת ה-Worker
-
-מתוך תיקיית הפרויקט, בטרמינל:
+צריך לפרוס פעם אחת כדי לקבל את הכתובת, שתידרש בשלב הבא.
 
 ```bash
 cd worker
+```
+
+```bash
 npx wrangler login
 ```
 
-ערוך את `worker/wrangler.toml` והסר את הסימון מהשורות של `ACCESS_TEAM` ו-`ACCESS_AUD`:
-
-```toml
-ACCESS_TEAM = "rozenmusic"
-ACCESS_AUD  = "ה-AUD שהעתקת בשלב 3"
-```
-
-> אם יצרת שתי אפליקציות ב-Access, רשום את שני ערכי ה-AUD מופרדים בפסיק:
-> `ACCESS_AUD = "aud1,aud2"`
-
-עכשיו הזן את הטוקן של GitHub כסוד (הוא לא נשמר בקובץ ולא נכנס ל-git):
-
-```bash
-npx wrangler secret put GITHUB_TOKEN
-```
-
-הדבק את הטוקן כשהוא מבקש. ואז:
+ייפתח דפדפן שמבקש לאשר. אשר.
 
 ```bash
 npx wrangler deploy
 ```
 
-## שלב 5 — בדיקה
+בסוף תופיע שורה עם כתובת בסגנון:
 
-1. פתח **בחלון גלישה בסתר** את `https://rozenmusic.co.il/admin/`
-2. אתה אמור לקבל מסך של Cloudflare שמבקש מייל, ואז קוד חד־פעמי.
-3. אחרי הכניסה — רשימת השירים נטענת.
-4. נסה להסתיר שיר ולהחזיר אותו. אם זה עבד, הכל מחובר.
-5. בדיקה אחרונה וחשובה: פתח את `/admin/` מדפדפן אחר **בלי להתחבר**.
-   אתה אמור להיחסם לפני שהדף נטען בכלל.
+```
+https://rozenmusic-admin.<שם-החשבון>.workers.dev
+```
 
-אם משהו לא עובד, `npx wrangler tail` מציג את הלוגים של ה-Worker בזמן אמת.
+**העתק אותה.** נקרא לה מכאן והלאה "כתובת ה-Worker".
+
+---
+
+## שלב 3 — רישום אפליקציית OAuth ב-GitHub
+
+1. https://github.com/settings/developers → **OAuth Apps** → **New OAuth App**
+2. **Application name:** `ניהול שירים – ויקטוריה רוזן`
+3. **Homepage URL:** `https://rozenmusic.co.il`
+4. **Authorization callback URL:** כתובת ה-Worker משלב 2, **בתוספת** `/api/callback`
+   לדוגמה: `https://rozenmusic-admin.my-account.workers.dev/api/callback`
+5. **Register application**
+6. במסך שנפתח: העתק את ה-**Client ID**.
+7. לחץ **Generate a new client secret**, והעתק גם אותו. הוא מוצג פעם אחת בלבד.
+
+---
+
+## שלב 4 — חיבור ה-Worker לאפליקציה
+
+פתח את [worker/wrangler.toml](worker/wrangler.toml) ומלא את ה-Client ID:
+
+```toml
+GITHUB_CLIENT_ID = "ה-Client ID משלב 3"
+```
+
+שמור, וחזרה לטרמינל (עדיין בתיקיית `worker`):
+
+```bash
+npx wrangler secret put GITHUB_CLIENT_SECRET
+```
+
+יבקש ערך — **הדבק את ה-Client Secret משלב 3** ולחץ Enter. הוא נשמר מוצפן אצל Cloudflare
+ולא נכנס ל-git.
+
+```bash
+npx wrangler deploy
+```
+
+---
+
+## שלב 5 — חיבור דף הניהול ל-Worker
+
+פתח את [admin/config.js](admin/config.js) והדבק את כתובת ה-Worker **בתוספת** `/api`:
+
+```js
+window.ADMIN_API = 'https://rozenmusic-admin.my-account.workers.dev/api';
+```
+
+ואז העלה את האתר:
+
+```bash
+git add -A
+```
+
+```bash
+git commit -m "חיבור דף הניהול"
+```
+
+```bash
+git push
+```
+
+GitHub Pages מעלה את השינוי תוך כדקה.
+
+---
+
+## שלב 6 — בדיקה
+
+1. פתח **חלון גלישה בסתר** ולך ל-`https://rozenmusic.co.il/admin/`
+2. אמור להופיע מסך עם כפתור **"התחברות עם GitHub"**
+3. לחץ → GitHub מבקש לאשר את האפליקציה → אשר
+4. אתה חוזר לדף הניהול, ובפינה העליונה מופיע שם המשתמש שלך
+5. נסה **הסתרה** על שיר ואז **הצגה** כדי להחזיר. אם שתיהן עברו — הכל מחובר.
+
+אם משהו נתקע, `npx wrangler tail` מתיקיית `worker` מציג את הלוגים בזמן אמת.
+
+---
 
 ## תחזוקה
 
 | מתי | מה לעשות |
 |---|---|
-| להוסיף או להסיר משתמש | Zero Trust → Access → Applications → עריכת ה-policy |
-| הטוקן פג (שנה) | להנפיק חדש בשלב 1, ואז `npx wrangler secret put GITHUB_TOKEN` מחדש |
-| לבטל גישה מיידית | מחיקת המייל מה-policy. אין צורך לגעת בטוקן |
-| משהו פורסם בטעות | כל שינוי הוא קומיט ב-GitHub. `git revert` מחזיר אותו |
+| להוסיף משתמש | להוסיף אותו כ-collaborator בריפו. זה הכל |
+| לבטל גישה | להסיר אותו מה-collaborators. מיידי |
+| לראות מי עשה מה | היסטוריית הקומיטים ב-GitHub. כל שינוי רשום על שם מי שביצע אותו |
+| משהו פורסם בטעות | `git revert` על הקומיט הרלוונטי |
+
+אין טוקן שפג ואין סיסמה שצריך להחליף — אין מה לתחזק באופן שוטף.
 
 ## מה לשלוח למשתמש
 
-את הקישור `https://rozenmusic.co.il/admin/` ואת הקובץ [admin/HOWTO.md](admin/HOWTO.md).
-אין סיסמה להעביר — הכניסה היא בקוד שנשלח למייל שלו בכל פעם.
+את הקישור `https://rozenmusic.co.il/admin/` ואת [admin/HOWTO.md](admin/HOWTO.md).
+אין שום דבר סודי להעביר לו.

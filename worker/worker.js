@@ -1,23 +1,30 @@
 /**
- * Cloudflare Worker — שכבת הפרסום של דף הניהול.
+ * Cloudflare Worker — שכבת ההזדהות והפרסום של דף הניהול.
  *
- * למה הוא קיים: הטוקן של GitHub יושב כאן בצד השרת ולא מגיע אף פעם לדפדפן.
- * ה-Worker יודע לעשות שלושה דברים בלבד — לקרוא את songs-data.js, לכתוב אותו,
- * ולהעלות קובץ לתיקיות audio/ או covers/. אין לו שום דרך לגעת בשאר האתר.
+ * הרעיון: GitHub הוא מערכת ההרשאות. מי שהוא collaborator בריפו יכול לפרסם שירים,
+ * מי שלא — לא נכנס. אין טוקן שמור בשום מקום, אין סיסמאות, ואין רשימת מורשים לתחזק.
  *
- * אימות: Cloudflare Access חוסם את /api/* ואת /admin/* לפני שהבקשה מגיעה לכאן,
- * וה-Worker מאמת שוב את ה-JWT שהוא מנפיק (defense in depth) — כך שגם אם מישהו
- * יעקוף את ה-route, בלי JWT חתום הוא לא יקבל כלום.
+ * הזרימה:
+ *   1. דף הניהול שולח את המשתמש ל-/api/login
+ *   2. ה-Worker מעביר אותו ל-GitHub שיאשר
+ *   3. GitHub מחזיר אותו ל-/api/callback עם קוד
+ *   4. ה-Worker מחליף את הקוד בטוקן אישי של המשתמש, ובודק שיש לו הרשאת כתיבה לריפו
+ *   5. ה-Worker מצפין את הטוקן לתוך "כרטיס כניסה" ומחזיר את המשתמש לדף הניהול
+ *   6. כל פרסום מתבצע עם ההרשאה האישית שלו — והקומיטים נרשמים על שמו
  *
- * משתני סביבה (secrets):
- *   GITHUB_TOKEN   — fine-grained PAT, מוגבל לריפו הזה, הרשאת Contents: Read and write
- *   GITHUB_REPO    — למשל searun74-hub/victoria-rosen-website
- *   GITHUB_BRANCH  — master
- *   ACCESS_TEAM    — שם ה-team ב-Cloudflare Zero Trust (החלק שלפני .cloudflareaccess.com)
- *   ACCESS_AUD     — ה-Application Audience (AUD) Tag של האפליקציה ב-Access
+ * הגדרות ב-wrangler.toml:
+ *   GITHUB_REPO       — searun74-hub/victoria-rosen-website
+ *   GITHUB_BRANCH     — master
+ *   GITHUB_CLIENT_ID  — ה-Client ID של אפליקציית ה-OAuth (לא סודי)
+ *   ADMIN_URL         — https://rozenmusic.co.il/admin/
+ *
+ * סוד (נכנס בפקודה npx wrangler secret put):
+ *   GITHUB_CLIENT_SECRET — ה-Client Secret של אותה אפליקציה
  */
 
 const DATA_PATH = 'songs-data.js';
+const SESSION_HOURS = 12;
+const SCOPE = 'public_repo';   // הריפו ציבורי, אז זו ההרשאה הצרה שמספיקה
 
 const FILE_HEADER = `// מאגר השירים של האתר — קובץ זה נוצר ונערך אוטומטית על ידי דף הניהול (/admin/).
 // אפשר לערוך אותו גם ביד, אבל חובה לשמור על מבנה JSON תקין בתוך הסוגריים המרובעים,
@@ -35,30 +42,54 @@ const LIMITS = {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const path = url.pathname.replace(/^\/api/, '');
+    const path = url.pathname.replace(/^\/api/, '') || '/';
+
+    if (request.method === 'OPTIONS') return cors(new Response(null, { status: 204 }), request, env);
 
     try {
-      const identity = await verifyAccess(request, env);
+      if (path === '/login') return redirectToGitHub(request, env);
+      if (path === '/callback') return handleCallback(request, env);
 
-      if (path === '/songs' && request.method === 'GET') return json(await getSongs(env));
-      if (path === '/songs' && request.method === 'POST') return json(await putSongs(request, env, identity));
-      if (path === '/upload' && request.method === 'POST') return json(await putUpload(request, env, identity));
+      const session = await requireSession(request, env);
 
-      return json({ error: 'לא נמצא' }, 404);
+      if (path === '/me') return reply({ login: session.login }, 200, request, env);
+      if (path === '/songs' && request.method === 'GET') return reply(await getSongs(env, session), 200, request, env);
+      if (path === '/songs' && request.method === 'POST') return reply(await putSongs(request, env, session), 200, request, env);
+      if (path === '/upload' && request.method === 'POST') return reply(await putUpload(request, env, session), 200, request, env);
+
+      return reply({ error: 'לא נמצא' }, 404, request, env);
     } catch (err) {
-      const status = err.status || 500;
-      return json({ error: err.message || 'שגיאה בשרת' }, status);
+      return reply({ error: err.message || 'שגיאה בשרת' }, err.status || 500, request, env);
     }
   }
 };
 
-/* ---------- עזרים ---------- */
+/* ---------- תשובות ו-CORS ---------- */
 
-function json(body, status = 200) {
-  return new Response(JSON.stringify(body), {
+function allowedOrigins(env) {
+  // דף הניהול מתארח על האתר, ה-Worker על כתובת אחרת — אז צריך להתיר לו במפורש
+  const admin = new URL(env.ADMIN_URL || 'https://rozenmusic.co.il/admin/');
+  return [admin.origin, 'http://localhost:8745', 'http://127.0.0.1:8745'];
+}
+
+function cors(res, request, env) {
+  const origin = request.headers.get('Origin');
+  if (origin && allowedOrigins(env).includes(origin)) {
+    res.headers.set('Access-Control-Allow-Origin', origin);
+    res.headers.set('Vary', 'Origin');
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.headers.set('Access-Control-Max-Age', '86400');
+  }
+  return res;
+}
+
+function reply(body, status, request, env) {
+  const res = new Response(JSON.stringify(body), {
     status,
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
   });
+  return cors(res, request, env);
 }
 
 function fail(status, message) {
@@ -67,18 +98,12 @@ function fail(status, message) {
   return e;
 }
 
-/* ---------- אימות Cloudflare Access ---------- */
+/* ---------- base64url ---------- */
 
-let jwksCache = { keys: null, at: 0 };
-
-async function getJwks(team) {
-  const TTL = 60 * 60 * 1000;
-  if (jwksCache.keys && Date.now() - jwksCache.at < TTL) return jwksCache.keys;
-  const res = await fetch(`https://${team}.cloudflareaccess.com/cdn-cgi/access/certs`);
-  if (!res.ok) throw fail(500, 'לא הצלחנו לאמת את ההרשאה');
-  const data = await res.json();
-  jwksCache = { keys: data.keys || [], at: Date.now() };
-  return jwksCache.keys;
+function bytesToB64url(bytes) {
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 function b64urlToBytes(s) {
@@ -89,58 +114,148 @@ function b64urlToBytes(s) {
   return out;
 }
 
-async function verifyAccess(request, env) {
-  if (!env.ACCESS_TEAM || !env.ACCESS_AUD) throw fail(500, 'ה-Worker לא הוגדר במלואו (ACCESS_TEAM / ACCESS_AUD)');
+/* ---------- כרטיס כניסה מוצפן ----------
+   הטוקן של המשתמש לא נשמר בשום מסד נתונים. הוא מוצפן לתוך מחרוזת שהדפדפן שלו
+   מחזיק לזמן הביקור, ורק ה-Worker יודע לפתוח אותה. */
 
-  const token = request.headers.get('Cf-Access-Jwt-Assertion') ||
-    (request.headers.get('Cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1];
-  if (!token) throw fail(401, 'אין הרשאה. רעננו את הדף כדי להתחבר מחדש.');
-
-  const parts = token.split('.');
-  if (parts.length !== 3) throw fail(401, 'הרשאה לא תקינה');
-
-  const header = JSON.parse(new TextDecoder().decode(b64urlToBytes(parts[0])));
-  const payload = JSON.parse(new TextDecoder().decode(b64urlToBytes(parts[1])));
-
-  const keys = await getJwks(env.ACCESS_TEAM);
-  const jwk = keys.find(k => k.kid === header.kid);
-  if (!jwk) throw fail(401, 'ההרשאה פגה. רעננו את הדף.');
-
-  const key = await crypto.subtle.importKey(
-    'jwk', { kty: jwk.kty, n: jwk.n, e: jwk.e, alg: 'RS256', ext: true },
-    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']
-  );
-  const ok = await crypto.subtle.verify(
-    'RSASSA-PKCS1-v1_5', key, b64urlToBytes(parts[2]),
-    new TextEncoder().encode(parts[0] + '.' + parts[1])
-  );
-  if (!ok) throw fail(401, 'הרשאה לא תקינה');
-
-  const now = Math.floor(Date.now() / 1000);
-  if (payload.exp && payload.exp < now) throw fail(401, 'ההרשאה פגה. רעננו את הדף.');
-  if (payload.iss !== `https://${env.ACCESS_TEAM}.cloudflareaccess.com`) throw fail(401, 'הרשאה לא תקינה');
-  // ACCESS_AUD יכול להכיל כמה מזהים מופרדים בפסיק, אם יש יותר מאפליקציה אחת ב-Access
-  const allowed = String(env.ACCESS_AUD).split(',').map(s => s.trim()).filter(Boolean);
-  const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-  if (!aud.some(a => allowed.includes(a))) throw fail(401, 'הרשאה לא תקינה');
-
-  return { email: payload.email || 'unknown' };
+async function sessionKey(env) {
+  if (!env.GITHUB_CLIENT_SECRET) throw fail(500, 'ה-Worker לא הוגדר במלואו (חסר GITHUB_CLIENT_SECRET)');
+  const material = new TextEncoder().encode(env.GITHUB_CLIENT_SECRET + '|session-v1');
+  const digest = await crypto.subtle.digest('SHA-256', material);
+  return crypto.subtle.importKey('raw', digest, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
 }
 
-/* ---------- GitHub ---------- */
+async function seal(env, payload) {
+  const key = await sessionKey(env);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = new TextEncoder().encode(JSON.stringify(payload));
+  const enc = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data));
+  const out = new Uint8Array(iv.length + enc.length);
+  out.set(iv); out.set(enc, iv.length);
+  return bytesToB64url(out);
+}
 
-async function gh(env, path, options = {}) {
+async function unseal(env, token) {
+  const raw = b64urlToBytes(token);
+  const key = await sessionKey(env);
+  const plain = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: raw.slice(0, 12) }, key, raw.slice(12)
+  );
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+async function requireSession(request, env) {
+  const header = request.headers.get('Authorization') || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : '';
+  if (!token) throw fail(401, 'צריך להתחבר');
+  let session;
+  try {
+    session = await unseal(env, token);
+  } catch (_e) {
+    throw fail(401, 'ההתחברות פגה. התחברו מחדש.');
+  }
+  if (!session.exp || session.exp < Math.floor(Date.now() / 1000)) {
+    throw fail(401, 'ההתחברות פגה. התחברו מחדש.');
+  }
+  return session;
+}
+
+/* ---------- התחברות מול GitHub ---------- */
+
+function workerOrigin(request) {
+  return new URL(request.url).origin;
+}
+
+async function redirectToGitHub(request, env) {
+  if (!env.GITHUB_CLIENT_ID) throw fail(500, 'ה-Worker לא הוגדר במלואו (חסר GITHUB_CLIENT_ID)');
+  const state = await seal(env, { n: bytesToB64url(crypto.getRandomValues(new Uint8Array(12))), t: Date.now() });
+  const target = new URL('https://github.com/login/oauth/authorize');
+  target.searchParams.set('client_id', env.GITHUB_CLIENT_ID);
+  target.searchParams.set('redirect_uri', workerOrigin(request) + '/api/callback');
+  target.searchParams.set('scope', SCOPE);
+  target.searchParams.set('state', state);
+  return Response.redirect(target.toString(), 302);
+}
+
+function backToAdmin(env, fragment) {
+  const base = env.ADMIN_URL || 'https://rozenmusic.co.il/admin/';
+  return Response.redirect(base + '#' + fragment, 302);
+}
+
+async function handleCallback(request, env) {
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+
+  if (url.searchParams.get('error')) return backToAdmin(env, 'error=' + encodeURIComponent('ההתחברות בוטלה.'));
+  if (!code || !state) return backToAdmin(env, 'error=' + encodeURIComponent('ההתחברות נכשלה. נסו שוב.'));
+
+  // אימות ה-state, כדי שלא יוכלו לגרור את המשתמש להתחברות שהוא לא יזם
+  try {
+    const parsed = await unseal(env, state);
+    if (!parsed.t || Date.now() - parsed.t > 10 * 60 * 1000) throw new Error('stale');
+  } catch (_e) {
+    return backToAdmin(env, 'error=' + encodeURIComponent('ההתחברות פגה באמצע. נסו שוב.'));
+  }
+
+  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id: env.GITHUB_CLIENT_ID,
+      client_secret: env.GITHUB_CLIENT_SECRET,
+      code,
+      redirect_uri: workerOrigin(request) + '/api/callback'
+    })
+  });
+  const tokenData = await tokenRes.json().catch(() => ({}));
+  if (!tokenData.access_token) {
+    return backToAdmin(env, 'error=' + encodeURIComponent('GitHub לא אישר את ההתחברות. נסו שוב.'));
+  }
+
+  // כאן נקבעת ההרשאה: האם למשתמש הזה יש באמת גישת כתיבה לריפו
+  const repoRes = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}`, {
+    headers: ghHeaders(tokenData.access_token)
+  });
+  if (!repoRes.ok) return backToAdmin(env, 'error=' + encodeURIComponent('לא הצלחנו לבדוק את ההרשאות מול GitHub.'));
+  const repo = await repoRes.json();
+  if (!repo.permissions || !repo.permissions.push) {
+    return backToAdmin(env, 'error=' + encodeURIComponent(
+      'החשבון הזה לא מורשה לערוך את האתר. בקשו מבעל האתר להוסיף אתכם כ-collaborator.'));
+  }
+
+  const userRes = await fetch('https://api.github.com/user', { headers: ghHeaders(tokenData.access_token) });
+  const user = await userRes.json().catch(() => ({}));
+
+  const session = await seal(env, {
+    login: user.login || 'unknown',
+    gh: tokenData.access_token,
+    exp: Math.floor(Date.now() / 1000) + SESSION_HOURS * 3600
+  });
+  return backToAdmin(env, 't=' + session);
+}
+
+/* ---------- GitHub API ---------- */
+
+function ghHeaders(token) {
+  return {
+    'Authorization': `Bearer ${token}`,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'rozenmusic-admin-worker'
+  };
+}
+
+async function gh(env, session, path, options = {}) {
   const res = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/${path}`, {
     ...options,
     headers: {
-      'Authorization': `Bearer ${env.GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'rozenmusic-admin-worker',
+      ...ghHeaders(session.gh),
       ...(options.body ? { 'Content-Type': 'application/json' } : {})
     }
   });
-  if (res.status === 401 || res.status === 403) throw fail(500, 'הטוקן של GitHub לא תקף או שפג. צריך להנפיק טוקן חדש.');
+  if (res.status === 401) throw fail(401, 'ההתחברות פגה. התחברו מחדש.');
+  if (res.status === 403) throw fail(403, 'אין לחשבון הזה הרשאה לערוך את האתר.');
   if (res.status === 409) throw fail(409, 'מישהו עדכן את השירים בו זמנית. רעננו את הדף ונסו שוב.');
   if (!res.ok) {
     const text = await res.text();
@@ -165,8 +280,8 @@ function base64ToUtf8(b64) {
 
 /* ---------- קריאה וכתיבה של השירים ---------- */
 
-async function getSongs(env) {
-  const file = await gh(env, `contents/${DATA_PATH}?ref=${env.GITHUB_BRANCH}`);
+async function getSongs(env, session) {
+  const file = await gh(env, session, `contents/${DATA_PATH}?ref=${env.GITHUB_BRANCH}`);
   const text = base64ToUtf8(file.content);
   const start = text.indexOf('[');
   const end = text.lastIndexOf(']');
@@ -177,7 +292,7 @@ async function getSongs(env) {
   } catch (_e) {
     throw fail(500, 'קובץ השירים באתר לא בפורמט JSON תקין. מישהו ערך אותו ביד ושבר אותו.');
   }
-  return { songs, sha: file.sha };
+  return { songs, sha: file.sha, login: session.login };
 }
 
 const FIELDS = ['slug', 'title', 'performer', 'tags', 'credits', 'blurb', 'lyricsExcerpt',
@@ -236,20 +351,20 @@ function validateSongs(songs) {
   });
 }
 
-async function putSongs(request, env, identity) {
+async function putSongs(request, env, session) {
   const body = await request.json().catch(() => { throw fail(400, 'בקשה לא תקינה'); });
   const songs = validateSongs(body.songs);
 
-  // הגנה מפני דריסה: אם הקובץ באתר השתנה מאז שהדף נטען, לא כותבים.
-  const current = await gh(env, `contents/${DATA_PATH}?ref=${env.GITHUB_BRANCH}`);
+  // הגנה מפני דריסה: אם הקובץ באתר השתנה מאז שהדף נטען, לא כותבים
+  const current = await gh(env, session, `contents/${DATA_PATH}?ref=${env.GITHUB_BRANCH}`);
   if (body.sha && body.sha !== current.sha) {
     throw fail(409, 'השירים באתר עודכנו מאז שפתחתם את הדף. רעננו את הדף ונסו שוב.');
   }
 
   const content = FILE_HEADER + JSON.stringify(songs, null, 2) + ';\n';
-  const message = (str(body.message, 150, 'הודעה') || 'עדכון שירים') + `\n\nדרך דף הניהול, על ידי ${identity.email}`;
+  const message = (str(body.message, 150, 'הודעה') || 'עדכון שירים') + '\n\nדרך דף הניהול';
 
-  const res = await gh(env, `contents/${DATA_PATH}`, {
+  const res = await gh(env, session, `contents/${DATA_PATH}`, {
     method: 'PUT',
     body: JSON.stringify({
       message,
@@ -264,14 +379,13 @@ async function putSongs(request, env, identity) {
 /* ---------- העלאת קבצים ---------- */
 
 const MAGIC = {
-  mp3: bytes => (bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) ||   // ID3
-                (bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0),                 // MPEG frame
-  jpg: bytes => bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF,
-  png: bytes => bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47,
-  webp: bytes => bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46
+  mp3: b => (b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33) || (b[0] === 0xFF && (b[1] & 0xE0) === 0xE0),
+  jpg: b => b[0] === 0xFF && b[1] === 0xD8 && b[2] === 0xFF,
+  png: b => b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47,
+  webp: b => b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46
 };
 
-async function putUpload(request, env, identity) {
+async function putUpload(request, env, session) {
   const body = await request.json().catch(() => { throw fail(400, 'בקשה לא תקינה'); });
   const path = String(body.path || '');
 
@@ -283,27 +397,25 @@ async function putUpload(request, env, identity) {
   if (!/^[A-Za-z0-9+/]+={0,2}$/.test(b64)) throw fail(400, 'תוכן הקובץ לא תקין');
 
   const size = Math.floor(b64.length * 3 / 4);
-  const max = isAudio ? LIMITS.audioBytes : LIMITS.coverBytes;
-  if (size > max) throw fail(400, 'הקובץ גדול מדי');
+  if (size > (isAudio ? LIMITS.audioBytes : LIMITS.coverBytes)) throw fail(400, 'הקובץ גדול מדי');
 
-  // בדיקת חתימת הקובץ, כדי שלא יוכלו להעלות משהו אחר במסווה של mp3 או תמונה
+  // בדיקת חתימת הקובץ, כדי שלא יעלו משהו אחר במסווה של mp3 או תמונה
   const head = atob(b64.slice(0, 32));
   const bytes = new Uint8Array(8);
   for (let i = 0; i < 8 && i < head.length; i++) bytes[i] = head.charCodeAt(i);
-  const kind = isAudio ? 'mp3' : (coverMatch[1] === 'jpeg' ? 'jpg' : coverMatch[1]);
+  const kind = isAudio ? 'mp3' : coverMatch[1];
   if (!MAGIC[kind](bytes)) throw fail(400, 'הקובץ לא נראה כמו ' + (isAudio ? 'קובץ MP3' : 'תמונה') + ' תקין');
 
-  // קובץ קיים באותו שם מוחלף — צריך את ה-sha שלו
   let sha;
   try {
-    const existing = await gh(env, `contents/${path}?ref=${env.GITHUB_BRANCH}`);
+    const existing = await gh(env, session, `contents/${path}?ref=${env.GITHUB_BRANCH}`);
     sha = existing.sha;
   } catch (_e) { /* הקובץ לא קיים, זו העלאה חדשה */ }
 
-  await gh(env, `contents/${path}`, {
+  await gh(env, session, `contents/${path}`, {
     method: 'PUT',
     body: JSON.stringify({
-      message: `העלאת קובץ: ${path}\n\nדרך דף הניהול, על ידי ${identity.email}`,
+      message: `העלאת קובץ: ${path}\n\nדרך דף הניהול`,
       content: b64,
       branch: env.GITHUB_BRANCH,
       ...(sha ? { sha } : {})

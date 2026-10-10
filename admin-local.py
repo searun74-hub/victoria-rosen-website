@@ -122,7 +122,8 @@ def publish_to_github(message):
     """commit + push. מחזיר אזהרה כטקסט אם משהו לא עבד, או None אם הכל תקין."""
     if not PUSH:
         return "השינוי נשמר במחשב בלבד (PUSH=0). כדי שיופיע באתר צריך לדחוף ל-GitHub."
-    add = git("add", "-A")
+    # רק הקבצים של השירים — כדי לא לגרוף לקומיט עבודה אחרת שבאמצע
+    add = git("add", "--", "songs-data.js", "audio", "covers")
     if add.returncode != 0:
         return "השמירה הצליחה, אבל git add נכשל: " + (add.stderr or "").strip()
     commit = git("commit", "-m", message)

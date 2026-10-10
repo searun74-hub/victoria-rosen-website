@@ -2,15 +2,15 @@ name = "rozenmusic-admin"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
-# ה-Worker מאזין רק על /api/* בדומיין. כל שאר האתר ממשיך להגיע מ-GitHub Pages.
-[[routes]]
-pattern = "rozenmusic.co.il/api/*"
-zone_name = "rozenmusic.co.il"
+# ה-Worker מתארח על כתובת workers.dev משלו. לא נוגעים ב-DNS של האתר.
+workers_dev = true
 
-# הערכים שאינם סודיים. את GITHUB_TOKEN מגדירים כ-secret:
-#   npx wrangler secret put GITHUB_TOKEN
 [vars]
 GITHUB_REPO = "searun74-hub/victoria-rosen-website"
 GITHUB_BRANCH = "master"
-# ACCESS_TEAM = "<שם הטים שלך ב-Zero Trust, בלי .cloudflareaccess.com>"
-# ACCESS_AUD  = "<ה-AUD Tag של האפליקציה ב-Access>"
+ADMIN_URL = "https://rozenmusic.co.il/admin/"
+
+# את הערך הזה ממלאים אחרי רישום אפליקציית ה-OAuth ב-GitHub (שלב 4 במדריך).
+# ה-Client ID אינו סוד ולכן הוא יושב כאן. ה-Client Secret נכנס בנפרד:
+#   npx wrangler secret put GITHUB_CLIENT_SECRET
+GITHUB_CLIENT_ID = ""

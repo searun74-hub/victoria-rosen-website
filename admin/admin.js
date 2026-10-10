@@ -2,7 +2,9 @@
    כל הכתיבה לאתר עוברת דרך ה-Worker ב-/api — דף זה לא מחזיק שום מפתח או סיסמה.
    הזיהוי נעשה על ידי Cloudflare Access לפני שהדף נטען בכלל. */
 
-const API = '/api';
+const IS_LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+const API = IS_LOCAL ? '/api' : (window.ADMIN_API || '');
+const SESSION_KEY = 'vr_admin_session';
 
 const GRADIENTS = [
   'from-primary/40 to-tertiary/40',
@@ -76,15 +78,31 @@ function confirmDialog(title, text, yesLabel) {
 }
 
 /* ---------- שכבת ה-API ---------- */
+function getSession() {
+  try { return sessionStorage.getItem(SESSION_KEY) || ''; } catch (_e) { return ''; }
+}
+function setSession(v) {
+  try { v ? sessionStorage.setItem(SESSION_KEY, v) : sessionStorage.removeItem(SESSION_KEY); } catch (_e) { /* ignore */ }
+}
+
 async function api(path, options) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = getSession();
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+
   let res;
   try {
-    res = await fetch(API + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
+    res = await fetch(API + path, Object.assign({ headers }, options));
   } catch (_e) {
     throw new Error('אין חיבור לאינטרנט, או שהשירות לא זמין כרגע. נסו שוב בעוד רגע.');
   }
-  if (res.status === 401 || res.status === 403) {
-    throw new Error('ההרשאה פגה. רעננו את הדף כדי להתחבר מחדש.');
+  if (res.status === 401) {
+    setSession('');
+    showLogin('ההתחברות פגה. התחברו שוב.');
+    throw new Error('ההתחברות פגה.');
+  }
+  if (res.status === 403) {
+    throw new Error('לחשבון הזה אין הרשאה לערוך את האתר.');
   }
   let data = null;
   try { data = await res.json(); } catch (_e) { /* ignore */ }
@@ -98,6 +116,7 @@ async function loadSongs() {
   const data = await api('/songs');
   state.songs = data.songs;
   state.sha = data.sha;
+  return data;
 }
 
 async function publishSongs(message) {
@@ -619,22 +638,70 @@ $('btn-new').addEventListener('click', () => {
   else openForm(null);
 });
 
+/* ---------- כניסה ויציאה ---------- */
+
+function showLogin(message) {
+  hide('loading'); hide('view-list'); hide('view-form');
+  show('view-login');
+  $('who').classList.add('hidden');
+  $('btn-logout').classList.add('hidden');
+  const note = $('login-note');
+  if (!API) {
+    note.textContent = 'דף הניהול עוד לא חובר לשרת הפרסום. צריך למלא את הכתובת בקובץ admin/config.js.';
+    $('btn-login').disabled = true;
+  } else {
+    note.textContent = message || '';
+  }
+}
+
+$('btn-login').addEventListener('click', () => { location.href = API + '/login'; });
+
+$('btn-logout').addEventListener('click', () => {
+  setSession('');
+  location.hash = '';
+  showLogin('יצאתם. אפשר להתחבר שוב בכל רגע.');
+});
+
+/* הכרטיס חוזר מה-Worker בתוך ה-# של הכתובת. קוראים אותו, שומרים, ומנקים את השורה. */
+function takeTokenFromUrl() {
+  const hash = location.hash.replace(/^#/, '');
+  if (!hash) return null;
+  const params = new URLSearchParams(hash);
+  const token = params.get('t');
+  const error = params.get('error');
+  history.replaceState(null, '', location.pathname + location.search);
+  if (token) { setSession(token); return null; }
+  return error || null;
+}
+
 /* ---------- עלייה ---------- */
-const IS_LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 if (IS_LOCAL) {
-  const out = document.querySelector('a[href="/cdn-cgi/access/logout"]');
-  if (out) out.remove();
-  const tag = document.getElementById('mode-tag');
+  const tag = $('mode-tag');
   if (tag) { tag.textContent = 'מצב מקומי'; tag.classList.remove('hidden'); }
 }
 
 (async function init() {
+  const loginError = takeTokenFromUrl();
+
+  if (!IS_LOCAL && (loginError || !getSession())) {
+    showLogin(loginError || '');
+    return;
+  }
+
   try {
-    await loadSongs();
+    const data = await loadSongs();
     renderList();
+    if (!IS_LOCAL) {
+      $('btn-logout').classList.remove('hidden');
+      if (data && data.login) {
+        $('who').textContent = '@' + data.login;
+        $('who').classList.remove('hidden');
+      }
+    }
     const d = readDraft();
     if (d) banner('info', 'יש לכם טיוטה שלא פורסמה ("' + esc(d.title || 'בלי שם') + '"). היא תחכה בלחיצה על "הוספת שיר חדש".');
   } catch (err) {
+    if (!getSession() && !IS_LOCAL) return;   // showLogin כבר טיפל בזה
     hide('loading');
     show('view-list');
     $('song-list').innerHTML = '';

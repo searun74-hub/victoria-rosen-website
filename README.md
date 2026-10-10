@@ -12,8 +12,8 @@
 | `songs-data.js` | **מקור האמת היחיד** לכל השירים. גם `songs.html` וגם `song.html` קוראים ממנו |
 | `LOGO.png`, `victoria.jpeg` | תמונות האתר |
 | `admin-local.py` | מריץ את דף הניהול מקומית וכותב ישירות לקבצים (`python admin-local.py`) |
-| `admin/` | דף ניהול השירים. מוגן ב-Cloudflare Access ולא מופיע בגוגל. ראו [SETUP-ADMIN.md](SETUP-ADMIN.md) |
-| `worker/` | Cloudflare Worker שמבצע את הפרסום בפועל. מחזיק את טוקן GitHub בצד השרת |
+| `admin/` | דף ניהול השירים. הכניסה בהזדהות GitHub, ולא מופיע בגוגל. ראו [SETUP-ADMIN.md](SETUP-ADMIN.md) |
+| `worker/` | Cloudflare Worker שמבצע את ההזדהות מול GitHub ואת הפרסום בפועל |
 | `reference/` | חומרי רקע מהעיצוב המקורי (לא חלק מהאתר החי) |
 
 ## איך מוסיפים שיר חדש
@@ -35,8 +35,9 @@ python admin-local.py
 
 ### מהאתר, בשביל משתמש נוסף
 
-אותו דף בדיוק, מתארח ב-`rozenmusic.co.il/admin/`. דורש הקמה חד-פעמית של שכבת הזדהות
-ו-Worker שמבצע את הפרסום — ראו [SETUP-ADMIN.md](SETUP-ADMIN.md).
+אותו דף בדיוק, מתארח ב-`rozenmusic.co.il/admin/`. הכניסה בהזדהות GitHub: מי שהוא
+collaborator בריפו יכול לפרסם, והקומיטים נרשמים על שמו. דורש הקמה חד-פעמית —
+ראו [SETUP-ADMIN.md](SETUP-ADMIN.md).
 
 **עריכה ידנית** עדיין אפשרית. `songs-data.js` הוא מערך JSON בתוך `const SONGS = [...]`:
 

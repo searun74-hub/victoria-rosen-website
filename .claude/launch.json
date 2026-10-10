@@ -1,0 +1,21 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "admin-mock",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "C:\\Users\\searu\\AppData\\Local\\Temp\\claude\\C--Users-searu--claude-projects-victoria-rosen-website\\39e984e9-eedc-4a34-b817-5e9dc973dfbb\\scratchpad\\mockserver.py"
+      ],
+      "port": 8744
+    },
+    {
+      "name": "admin-local-nopush",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "C:\\Users\\searu\\AppData\\Local\\Temp\\claude\\C--Users-searu--claude-projects-victoria-rosen-website\\39e984e9-eedc-4a34-b817-5e9dc973dfbb\\scratchpad\\run_local_nopush.py"
+      ],
+      "port": 8745
+    }
+  ]
+}

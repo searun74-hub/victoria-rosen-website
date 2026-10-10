@@ -134,7 +134,7 @@
 </div>
 </div>
 </footer>
-<script src="songs-data.js?v=3"></script>
+<script src="songs-data.js"></script>
 <script>
     // Header Scroll Effect
     window.addEventListener('scroll', () => {
@@ -148,10 +148,13 @@
         }
     });
 
+    // Hidden songs (hidden: true) never appear on the site.
+    const VISIBLE_SONGS = SONGS.filter(s => !s.hidden);
+
     // Render song detail from ?slug= in the URL
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
-    const song = SONGS.find(s => s.slug === slug);
+    const song = VISIBLE_SONGS.find(s => s.slug === slug);
     const contentEl = document.getElementById('song-content');
     const notFoundEl = document.getElementById('song-not-found');
 
@@ -254,10 +257,10 @@
             </div>`
             : '';
 
-        const songIndex = SONGS.indexOf(song);
-        const prevSong = SONGS[(songIndex - 1 + SONGS.length) % SONGS.length];
-        const nextSong = SONGS[(songIndex + 1) % SONGS.length];
-        const prevNextHtml = SONGS.length > 1
+        const songIndex = VISIBLE_SONGS.indexOf(song);
+        const prevSong = VISIBLE_SONGS[(songIndex - 1 + VISIBLE_SONGS.length) % VISIBLE_SONGS.length];
+        const nextSong = VISIBLE_SONGS[(songIndex + 1) % VISIBLE_SONGS.length];
+        const prevNextHtml = VISIBLE_SONGS.length > 1
             ? `<div class="flex items-center justify-between gap-4 mb-12 pt-8 border-t border-on-surface/10">
                 <a href="song.html?slug=${encodeURIComponent(prevSong.slug)}" class="inline-flex items-center gap-2 text-on-surface/80 hover:text-secondary font-headline font-bold transition-colors min-w-0">
                     <span class="material-symbols-outlined flex-shrink-0" aria-hidden="true">arrow_forward</span>

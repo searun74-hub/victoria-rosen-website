@@ -139,24 +139,6 @@ const SONGS = [
     "hidden": false
   },
   {
-    "slug": "million-voices",
-    "title": "מיליון קולות",
-    "performer": "להקת Lollipop, מזכרת בתיה",
-    "tags": [
-      "המנון פסטיבל"
-    ],
-    "credits": "המנון פסטיבל Million Voices, שבו ויקטוריה רוזן משמשת כמנהלת מוזיקלית. הפסטיבל כבר 11 שנים בדרך. מילים: מריה סוקולובסקי. לחן: ויקטוריה רוזן. ביצוע: להקת Lollipop, מזכרת בתיה. השיר מוצג בשתי גרסאות: עברית ובינלאומית.",
-    "blurb": "המנון עוצמתי על מציאת הקול הפנימי, על האומץ להתקדם בלי מבט לאחור, ועל הכוח שבמוזיקה המחברת מיליון קולות לקול אחד גדול.",
-    "lyricsExcerpt": "מעכשיו רק קדימה, לא להביט לאחור\nלא לתת לעולם את קולך לעצור\nמה שאי פעם חיפשת, בידיים שלך\nהצלילים יחברו תמיד ביני לבינך\n\nמוזיקה כל יום פותחת דלתות\nמיליון קולות זה הזמן לגלות\nללכת אחרי החלומות הגדולים\nליהנות ממנגינות ושירים\n\n(גרסה בינלאומית)\n\nFind your voice in the crowd, in every step that you take\nThe journey can take you far, don't give up when you break\nFind your voice, make it strong, sing it out through the rain\nYou can never go wrong with what makes your heart play\n\nMillion voices rising up to the sky\nFilling the space between you and I\nMusic by your side, you're never alone\nWith music you will always belong",
-    "youtubeId": "7I4ba2qkANA",
-    "audioSrc": null,
-    "coverImage": null,
-    "duration": null,
-    "priceNote": "לפי פנייה",
-    "thumbGradient": "from-tertiary/40 to-primary/40",
-    "hidden": false
-  },
-  {
     "slug": "chaverot-hachi-tovot-sheli",
     "title": "חברות הכי טובות שלי",
     "performer": "Caramelot (אגם, מלאני ונועה)",
@@ -172,6 +154,24 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-primary/40 to-secondary/40",
+    "hidden": false
+  },
+  {
+    "slug": "million-voices",
+    "title": "מיליון קולות",
+    "performer": "להקת Lollipop, מזכרת בתיה",
+    "tags": [
+      "המנון פסטיבל"
+    ],
+    "credits": "המנון פסטיבל Million Voices, שבו ויקטוריה רוזן משמשת כמנהלת מוזיקלית. הפסטיבל כבר 11 שנים בדרך. מילים: מריה סוקולובסקי. לחן: ויקטוריה רוזן. ביצוע: להקת Lollipop, מזכרת בתיה. השיר מוצג בשתי גרסאות: עברית ובינלאומית.",
+    "blurb": "המנון עוצמתי על מציאת הקול הפנימי, על האומץ להתקדם בלי מבט לאחור, ועל הכוח שבמוזיקה המחברת מיליון קולות לקול אחד גדול.",
+    "lyricsExcerpt": "מעכשיו רק קדימה, לא להביט לאחור\nלא לתת לעולם את קולך לעצור\nמה שאי פעם חיפשת, בידיים שלך\nהצלילים יחברו תמיד ביני לבינך\n\nמוזיקה כל יום פותחת דלתות\nמיליון קולות זה הזמן לגלות\nללכת אחרי החלומות הגדולים\nליהנות ממנגינות ושירים\n\n(גרסה בינלאומית)\n\nFind your voice in the crowd, in every step that you take\nThe journey can take you far, don't give up when you break\nFind your voice, make it strong, sing it out through the rain\nYou can never go wrong with what makes your heart play\n\nMillion voices rising up to the sky\nFilling the space between you and I\nMusic by your side, you're never alone\nWith music you will always belong",
+    "youtubeId": "7I4ba2qkANA",
+    "audioSrc": null,
+    "coverImage": null,
+    "duration": null,
+    "priceNote": "לפי פנייה",
+    "thumbGradient": "from-tertiary/40 to-primary/40",
     "hidden": false
   },
   {

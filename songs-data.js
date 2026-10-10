@@ -23,22 +23,6 @@ const SONGS = [
     "hidden": false
   },
   {
-    "slug": "od-shniya-nesicha",
-    "title": "עוד שנייה נסיכה",
-    "performer": "",
-    "tags": [],
-    "credits": "שיר מקורי. מילים: ויקטוריה רוזן ומריה סוקולובסקי. לחן: ויקטוריה רוזן.",
-    "blurb": "שיר קסום על ילדה שחלומותיה מתגשמים לנגד עיניה, על פחדים שנשארים מאחור ועל האמונה שיום חדש מביא איתו קסם והתחלה.",
-    "lyricsExcerpt": "חלומות שלי\nאגדות שבי\nכל מה שפעם רציתי\nמתגשם כבר בי\nחלומות שבי\nהדרכים שלי\nשם אצעד\nעם בוא השמש יפתח לגבי\n\nאי שם לרגע הופכת הרוח שאותי מלטפת\nוהילדה כבר עוד שנייה נסיכה\nהפחדים שלי לא נוגעים כבר בי\nיום חדש את פני יאיר\nאמונה יביא",
-    "youtubeId": "-2zLv_QR42M",
-    "audioSrc": null,
-    "coverImage": null,
-    "duration": null,
-    "priceNote": "לפי פנייה",
-    "thumbGradient": "from-tertiary/40 to-secondary/40",
-    "hidden": false
-  },
-  {
     "slug": "bazman-hazeh",
     "title": "בזמן הזה",
     "performer": "אגם דגוביץ",
@@ -54,6 +38,22 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-primary/40 to-tertiary/40",
+    "hidden": false
+  },
+  {
+    "slug": "od-shniya-nesicha",
+    "title": "עוד שנייה נסיכה",
+    "performer": "",
+    "tags": [],
+    "credits": "שיר מקורי. מילים: ויקטוריה רוזן ומריה סוקולובסקי. לחן: ויקטוריה רוזן.",
+    "blurb": "שיר קסום על ילדה שחלומותיה מתגשמים לנגד עיניה, על פחדים שנשארים מאחור ועל האמונה שיום חדש מביא איתו קסם והתחלה.",
+    "lyricsExcerpt": "חלומות שלי\nאגדות שבי\nכל מה שפעם רציתי\nמתגשם כבר בי\nחלומות שבי\nהדרכים שלי\nשם אצעד\nעם בוא השמש יפתח לגבי\n\nאי שם לרגע הופכת הרוח שאותי מלטפת\nוהילדה כבר עוד שנייה נסיכה\nהפחדים שלי לא נוגעים כבר בי\nיום חדש את פני יאיר\nאמונה יביא",
+    "youtubeId": "-2zLv_QR42M",
+    "audioSrc": null,
+    "coverImage": null,
+    "duration": null,
+    "priceNote": "לפי פנייה",
+    "thumbGradient": "from-tertiary/40 to-secondary/40",
     "hidden": false
   },
   {

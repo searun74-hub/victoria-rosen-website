@@ -105,24 +105,6 @@ const SONGS = [
     "hidden": false
   },
   {
-    "slug": "many-dreams",
-    "title": "Many Dreams",
-    "performer": "אופיר גיליאדוב",
-    "tags": [
-      "אנגלית"
-    ],
-    "credits": "שיר מקורי באנגלית, מילים ולחן של ויקטוריה רוזן.",
-    "blurb": "שיר באנגלית על חלומות רבים שמחכים להתגשם, על האמונה שמישהו נותן לך כוח להמשיך, ועל החברות שתמיד תהיה שם, גם ברגעי דמעה וגם ברגעי שמחה.",
-    "lyricsExcerpt": "I have so many dreams\nThat I really wish they come true\nI know you believe in me\nAnd nothing will stop me, too\n\nOne day I will do everything\nOne day I will spread my wings\nEverything I wish for, everything I dreamed of\nIs in my heart\n\nI have so many dreams\nThat I wish they come true\nAnd with all the smiles and the tears\nI know my friends will be here",
-    "youtubeId": null,
-    "audioSrc": "audio/many-dreams.mp3",
-    "coverImage": "covers/many-dreams.svg",
-    "duration": null,
-    "priceNote": "לפי פנייה",
-    "thumbGradient": "from-tertiary/40 to-secondary/40",
-    "hidden": false
-  },
-  {
     "slug": "chaverot-hachi-tovot-sheli",
     "title": "חברות הכי טובות שלי",
     "performer": "Caramelot (אגם, מלאני ונועה)",
@@ -138,6 +120,24 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-primary/40 to-secondary/40",
+    "hidden": false
+  },
+  {
+    "slug": "many-dreams",
+    "title": "Many Dreams",
+    "performer": "אופיר גיליאדוב",
+    "tags": [
+      "אנגלית"
+    ],
+    "credits": "שיר מקורי באנגלית, מילים ולחן של ויקטוריה רוזן.",
+    "blurb": "שיר באנגלית על חלומות רבים שמחכים להתגשם, על האמונה שמישהו נותן לך כוח להמשיך, ועל החברות שתמיד תהיה שם, גם ברגעי דמעה וגם ברגעי שמחה.",
+    "lyricsExcerpt": "I have so many dreams\nThat I really wish they come true\nI know you believe in me\nAnd nothing will stop me, too\n\nOne day I will do everything\nOne day I will spread my wings\nEverything I wish for, everything I dreamed of\nIs in my heart\n\nI have so many dreams\nThat I wish they come true\nAnd with all the smiles and the tears\nI know my friends will be here",
+    "youtubeId": null,
+    "audioSrc": "audio/many-dreams.mp3",
+    "coverImage": "covers/many-dreams.svg",
+    "duration": null,
+    "priceNote": "לפי פנייה",
+    "thumbGradient": "from-tertiary/40 to-secondary/40",
     "hidden": false
   },
   {

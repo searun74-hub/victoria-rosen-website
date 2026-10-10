@@ -217,10 +217,18 @@ function renderList() {
 
   list.innerHTML = state.songs.map((song, i) => {
     const thumb = thumbFor(song);
+
+    // התגיות של השיר עצמו, בצבע — אלה התוכן
+    const tags = (song.tags || []).map(t =>
+      '<span class="chip" style="background:rgba(243,166,131,.35);border-color:transparent">' + esc(t) + '</span>');
+
+    // תוויות טכניות, מעומעמות — אלה רק מצב
+    const quiet = 'style="background:transparent;color:rgba(45,52,54,.55)"';
     const badges = [];
-    if (song.youtubeId) badges.push('<span class="chip">יוטיוב</span>');
-    if (song.audioSrc) badges.push('<span class="chip">MP3</span>');
-    if (!song.youtubeId && !song.audioSrc) badges.push('<span class="chip">בלי האזנה</span>');
+    if (song.youtubeId) badges.push('<span class="chip" ' + quiet + '>יוטיוב</span>');
+    if (song.audioSrc) badges.push('<span class="chip" ' + quiet + '>MP3</span>');
+    if (!song.youtubeId && !song.audioSrc) badges.push('<span class="chip" ' + quiet + '>בלי האזנה</span>');
+    if (!tags.length) badges.push('<span class="chip" ' + quiet + '>בלי תגיות</span>');
     if (song.hidden) badges.push('<span class="chip" style="background:rgba(45,52,54,.12)">מוסתר</span>');
 
     return '<div class="glass-card rounded-xl p-4 flex items-center gap-4 flex-wrap ' +
@@ -233,7 +241,7 @@ function renderList() {
       '<div class="flex-1 min-w-[10rem]">' +
         '<div class="font-headline font-bold text-lg">' + esc(song.title) + '</div>' +
         (song.performer ? '<div class="text-on-surface/60 text-sm">' + esc(song.performer) + '</div>' : '') +
-        '<div class="flex flex-wrap gap-1 mt-2">' + badges.join('') + '</div>' +
+        '<div class="flex flex-wrap gap-1 mt-2">' + tags.join('') + badges.join('') + '</div>' +
       '</div>' +
       '<div class="flex items-center gap-1 flex-shrink-0">' +
         '<button class="btn btn-ghost !px-2" data-act="up" data-i="' + i + '" title="העלאה למעלה" ' +

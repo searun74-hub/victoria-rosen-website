@@ -32,6 +32,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 PORT = int(os.environ.get("PORT", 8745))
 PUSH = os.environ.get("PUSH", "1") != "0"
 DATA_FILE = os.path.join(ROOT, "songs-data.js")
+SITEMAP_FILE = os.path.join(ROOT, "sitemap.xml")
+SITE = "https://rozenmusic.co.il"
 
 FILE_HEADER = (
     "// מאגר השירים של האתר — קובץ זה נוצר ונערך אוטומטית על ידי דף הניהול (/admin/).\n"
@@ -114,6 +116,49 @@ def write_songs(songs):
     io.open(DATA_FILE, "w", encoding="utf-8", newline="\n").write(content)
 
 
+def build_sitemap(current, songs):
+    """אותה לוגיקה כמו ב-Worker: כתובות שאינן שירים נשמרות, שירים מוצגים
+    מסונכרנים, ותאריך של שיר קיים לא משתנה סתם."""
+    import datetime
+    today = datetime.date.today().isoformat()
+    entries = re.findall(r"<url>.*?</url>", current, re.S)
+    non_song = [e for e in entries if "song.html?slug=" not in e]
+    by_slug = {}
+    for e in entries:
+        m = re.search(r"song\.html\?slug=([a-z0-9-]+)", e)
+        if m:
+            by_slug[m.group(1)] = e
+
+    song_entries = []
+    for s in songs:
+        if s.get("hidden"):
+            continue
+        song_entries.append(by_slug.get(
+            s["slug"],
+            '<url><loc>%s/song.html?slug=%s</loc><lastmod>%s</lastmod>'
+            '<changefreq>monthly</changefreq><priority>0.7</priority></url>'
+            % (SITE, s["slug"], today)))
+
+    i = current.find("<url>")
+    head = current[:i] if i != -1 else (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+    return head + "\n".join(non_song + song_entries) + "\n</urlset>\n"
+
+
+def write_sitemap(songs):
+    """מחזיר True אם הקובץ באמת השתנה."""
+    try:
+        current = io.open(SITEMAP_FILE, encoding="utf-8").read()
+    except OSError:
+        return False
+    nxt = build_sitemap(current, songs)
+    if nxt == current:
+        return False
+    io.open(SITEMAP_FILE, "w", encoding="utf-8", newline="\n").write(nxt)
+    return True
+
+
 def git(*args):
     return subprocess.run(["git"] + list(args), cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
 
@@ -123,7 +168,7 @@ def publish_to_github(message):
     if not PUSH:
         return "השינוי נשמר במחשב בלבד (PUSH=0). כדי שיופיע באתר צריך לדחוף ל-GitHub."
     # רק הקבצים של השירים — כדי לא לגרוף לקומיט עבודה אחרת שבאמצע
-    add = git("add", "--", "songs-data.js", "audio", "covers")
+    add = git("add", "--", "songs-data.js", "sitemap.xml", "audio", "covers")
     if add.returncode != 0:
         return "השמירה הצליחה, אבל git add נכשל: " + (add.stderr or "").strip()
     commit = git("commit", "-m", message)
@@ -184,6 +229,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if body.get("sha") and body["sha"] != current_sha:
             raise Refused("קובץ השירים השתנה מאז שפתחתם את הדף. רעננו ונסו שוב.", 409)
         write_songs(songs)
+        write_sitemap(songs)
         message = (body.get("message") or "עדכון שירים")[:150] + "\n\nדרך דף הניהול המקומי"
         warning = publish_to_github(message)
         _, new_sha = read_songs()

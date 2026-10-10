@@ -23,6 +23,8 @@
  */
 
 const DATA_PATH = 'songs-data.js';
+const SITEMAP_PATH = 'sitemap.xml';
+const SITE = 'https://rozenmusic.co.il';
 const SESSION_HOURS = 8;   // מתיישר עם תפוגת ההרשאה של GitHub (Expire user access tokens)
 const SCOPE = 'public_repo';   // הריפו ציבורי, אז זו ההרשאה הצרה שמספיקה
 
@@ -351,6 +353,58 @@ function validateSongs(songs) {
   });
 }
 
+/* ---------- sitemap ----------
+   נבנה מחדש בכל פרסום, אחרת שיר חדש לא נכנס אליו ושיר מוסתר נשאר בו.
+   כתובות שאינן של שירים נשמרות כמו שהן, והתאריך של שיר קיים לא משתנה סתם —
+   רק שיר חדש מקבל את התאריך של היום. */
+function buildSitemap(current, songs) {
+  const today = new Date().toISOString().slice(0, 10);
+  const entries = current.match(/<url>[\s\S]*?<\/url>/g) || [];
+
+  const nonSong = entries.filter(e => !e.includes('song.html?slug='));
+  const bySlug = new Map();
+  for (const e of entries) {
+    const m = e.match(/song\.html\?slug=([a-z0-9-]+)/);
+    if (m) bySlug.set(m[1], e);
+  }
+
+  const songEntries = songs.filter(s => !s.hidden).map(s => bySlug.get(s.slug) ||
+    `<url><loc>${SITE}/song.html?slug=${s.slug}</loc><lastmod>${today}</lastmod>` +
+    `<changefreq>monthly</changefreq><priority>0.7</priority></url>`);
+
+  const firstUrl = current.indexOf('<url>');
+  const head = firstUrl === -1
+    ? '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    : current.slice(0, firstUrl);
+
+  return head + nonSong.concat(songEntries).join('\n') + '\n</urlset>\n';
+}
+
+/* קומיט אחד שנוגע בכמה קבצים, כדי שהשירים וה-sitemap לא ייפרדו לעולם */
+async function commitFiles(env, session, files, message) {
+  const ref = await gh(env, session, `git/ref/heads/${env.GITHUB_BRANCH}`);
+  const baseSha = ref.object.sha;
+  const baseCommit = await gh(env, session, `git/commits/${baseSha}`);
+
+  const tree = await gh(env, session, 'git/trees', {
+    method: 'POST',
+    body: JSON.stringify({
+      base_tree: baseCommit.tree.sha,
+      tree: files.map(f => ({ path: f.path, mode: '100644', type: 'blob', content: f.content }))
+    })
+  });
+
+  const commit = await gh(env, session, 'git/commits', {
+    method: 'POST',
+    body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] })
+  });
+
+  await gh(env, session, `git/refs/heads/${env.GITHUB_BRANCH}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ sha: commit.sha })
+  });
+}
+
 async function putSongs(request, env, session) {
   const body = await request.json().catch(() => { throw fail(400, 'בקשה לא תקינה'); });
   const songs = validateSongs(body.songs);
@@ -364,16 +418,20 @@ async function putSongs(request, env, session) {
   const content = FILE_HEADER + JSON.stringify(songs, null, 2) + ';\n';
   const message = (str(body.message, 150, 'הודעה') || 'עדכון שירים') + '\n\nדרך דף הניהול';
 
-  const res = await gh(env, session, `contents/${DATA_PATH}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      message,
-      content: utf8ToBase64(content),
-      sha: current.sha,
-      branch: env.GITHUB_BRANCH
-    })
-  });
-  return { ok: true, sha: res.content.sha };
+  const files = [{ path: DATA_PATH, content }];
+
+  // ה-sitemap מתעדכן יחד עם השירים. אם הוא לא נקרא, לא מפילים בגלל זה את הפרסום.
+  try {
+    const sm = await gh(env, session, `contents/${SITEMAP_PATH}?ref=${env.GITHUB_BRANCH}`);
+    const before = base64ToUtf8(sm.content);
+    const after = buildSitemap(before, songs);
+    if (after !== before) files.push({ path: SITEMAP_PATH, content: after });
+  } catch (_e) { /* אין sitemap או שלא ניתן לקרוא אותו */ }
+
+  await commitFiles(env, session, files, message);
+
+  const updated = await gh(env, session, `contents/${DATA_PATH}?ref=${env.GITHUB_BRANCH}`);
+  return { ok: true, sha: updated.sha, sitemapUpdated: files.length > 1 };
 }
 
 /* ---------- העלאת קבצים ---------- */

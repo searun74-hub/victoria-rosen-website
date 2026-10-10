@@ -18,7 +18,7 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-tertiary/40 to-primary/40",
-    "hidden": false
+    "hidden": true
   },
   {
     "slug": "od-shniya-nesicha",

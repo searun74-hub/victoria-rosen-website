@@ -189,6 +189,6 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-primary/30 to-secondary/30",
-    "hidden": true
+    "hidden": false
   }
 ];

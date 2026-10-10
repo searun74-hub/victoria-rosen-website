@@ -282,7 +282,7 @@ $('song-list').addEventListener('click', async e => {
     await commit(copy,
       (song.hidden ? 'הצגת השיר ' : 'הסתרת השיר ') + song.title,
       song.hidden ? 'מחזיר את השיר לאתר…' : 'מסתיר את השיר…',
-      song.hidden ? 'השיר "' + esc(song.title) + '" חזר לאתר.' : 'השיר "' + esc(song.title) + '" הוסתר. הוא לא מופיע באתר, אבל שמור כאן ואפשר להחזיר אותו בכל רגע.');
+      song.hidden ? 'השיר "' + esc(song.title) + '" חזר לאתר. הוא יופיע שם תוך כדקה.' : 'השיר "' + esc(song.title) + '" הוסתר. הוא יורד מהאתר תוך כדקה, אבל נשאר שמור כאן ואפשר להחזיר אותו בכל רגע.');
     return;
   }
 
@@ -620,7 +620,7 @@ $('song-form').addEventListener('submit', async e => {
     if (state.lastWarning) { banner('info', esc(state.lastWarning)); return; }
     banner('ok', (existing ? 'השינויים נשמרו' : 'השיר "' + esc(title) + '" עלה לאתר') +
       '. אפשר לראות אותו כאן: <a class="underline" target="_blank" href="../song.html?slug=' +
-      encodeURIComponent(slug) + '">' + esc(title) + '</a> — ייתכן שייקח כמה דקות עד שיופיע.');
+      encodeURIComponent(slug) + '">' + esc(title) + '</a> — אם הוא עוד לא שם, רענון אחרי דקה יביא אותו.');
   } catch (e3) {
     err.textContent = e3.message;
   } finally {

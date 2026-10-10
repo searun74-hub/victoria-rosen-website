@@ -136,8 +136,9 @@
 </footer>
 <script>
 // songs-data.js מוגש ב-GitHub Pages עם מטמון של 4 שעות, ושיר חדש היה ממתין עד שיפוג.
-// הפרמטר מתחלף כל 5 דקות: עדכון מופיע מהר, והמטמון עדיין עובד בתוך החלון.
-document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 300000) + '"><\/scr' + 'ipt>');
+// הפרמטר מתחלף כל דקה: שינוי שמתפרסם נראה כמעט מיד, והמטמון עדיין חוסך
+// הורדה חוזרת כשמדפדפים בין דפי שירים.
+document.write('<scr' + 'ipt src="songs-data.js?t=' + Math.floor(Date.now() / 60000) + '"><\/scr' + 'ipt>');
 </script>
 <script>
     // Header Scroll Effect

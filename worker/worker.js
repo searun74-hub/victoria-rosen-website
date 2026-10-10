@@ -23,7 +23,7 @@
  */
 
 const DATA_PATH = 'songs-data.js';
-const SESSION_HOURS = 12;
+const SESSION_HOURS = 8;   // מתיישר עם תפוגת ההרשאה של GitHub (Expire user access tokens)
 const SCOPE = 'public_repo';   // הריפו ציבורי, אז זו ההרשאה הצרה שמספיקה
 
 const FILE_HEADER = `// מאגר השירים של האתר — קובץ זה נוצר ונערך אוטומטית על ידי דף הניהול (/admin/).

@@ -13,4 +13,4 @@ ADMIN_URL = "https://rozenmusic.co.il/admin/"
 # את הערך הזה ממלאים אחרי רישום אפליקציית ה-OAuth ב-GitHub (שלב 4 במדריך).
 # ה-Client ID אינו סוד ולכן הוא יושב כאן. ה-Client Secret נכנס בנפרד:
 #   npx wrangler secret put GITHUB_CLIENT_SECRET
-GITHUB_CLIENT_ID = ""
+GITHUB_CLIENT_ID = "Ov23liXhHljEo1zy3NIg"

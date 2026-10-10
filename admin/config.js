@@ -5,4 +5,4 @@
 
    כשמריצים את דף הניהול מקומית (admin-local.py) הערך הזה לא בשימוש. */
 
-window.ADMIN_API = '';
+window.ADMIN_API = 'https://rozenmusic-admin.searun74.workers.dev/api';

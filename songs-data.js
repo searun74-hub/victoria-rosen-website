@@ -20,7 +20,7 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-tertiary/40 to-primary/40",
-    "hidden": true
+    "hidden": false
   },
   {
     "slug": "bazman-hazeh",

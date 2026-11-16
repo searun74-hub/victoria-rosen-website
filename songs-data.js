@@ -141,22 +141,6 @@ const SONGS = [
     "hidden": false
   },
   {
-    "slug": "halev-hagadol-shelach",
-    "title": "הלב הגדול שלך",
-    "performer": "",
-    "tags": [],
-    "credits": "שיר מקורי, מילים ולחן של ויקטוריה רוזן.",
-    "blurb": "שיר מעודד על האמונה שכל מה שאת חולמת יכול להתגשם, על הקסם והכוח שבלב הגדול שלך, ועל התמיכה של הסובבים אותך בדרך אל העולם הגדול.",
-    "lyricsExcerpt": "מה שאת חולמת\nלך מראה תדרך\nוכבר את תדעי\nשרק תאמיני\nאת כל יכולה\n\nהלב הגדול שלך\nוהקסמים שיש בך\nנותנים לך כוחות\nאותך מובילים\nאל העולם הגדול\n\nאת כל כך כובשת\nאותנו מרגשת\nאנחנו איתך\nונאמין בך\nמה שלא תבחרי",
-    "youtubeId": null,
-    "audioSrc": "audio/halev-hagadol-shelach.mp3",
-    "coverImage": "covers/halev-hagadol-shelach.svg",
-    "duration": null,
-    "priceNote": "לפי פנייה",
-    "thumbGradient": "from-secondary/40 to-primary/40",
-    "hidden": false
-  },
-  {
     "slug": "shvil-chadash",
     "title": "שביל חדש",
     "performer": "מלאני גלוזמן",
@@ -172,6 +156,22 @@ const SONGS = [
     "duration": null,
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-secondary/40 to-tertiary/40",
+    "hidden": false
+  },
+  {
+    "slug": "halev-hagadol-shelach",
+    "title": "הלב הגדול שלך",
+    "performer": "",
+    "tags": [],
+    "credits": "שיר מקורי, מילים ולחן של ויקטוריה רוזן.",
+    "blurb": "שיר מעודד על האמונה שכל מה שאת חולמת יכול להתגשם, על הקסם והכוח שבלב הגדול שלך, ועל התמיכה של הסובבים אותך בדרך אל העולם הגדול.",
+    "lyricsExcerpt": "מה שאת חולמת\nלך מראה תדרך\nוכבר את תדעי\nשרק תאמיני\nאת כל יכולה\n\nהלב הגדול שלך\nוהקסמים שיש בך\nנותנים לך כוחות\nאותך מובילים\nאל העולם הגדול\n\nאת כל כך כובשת\nאותנו מרגשת\nאנחנו איתך\nונאמין בך\nמה שלא תבחרי",
+    "youtubeId": null,
+    "audioSrc": "audio/halev-hagadol-shelach.mp3",
+    "coverImage": "covers/halev-hagadol-shelach.svg",
+    "duration": null,
+    "priceNote": "לפי פנייה",
+    "thumbGradient": "from-secondary/40 to-primary/40",
     "hidden": false
   },
   {

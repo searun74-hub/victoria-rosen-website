@@ -119,9 +119,32 @@
     </div>
     <div id="song-list" class="space-y-3"></div>
     <p class="text-on-surface/50 text-sm mt-8 font-headline">
-      שינויים מופיעים באתר תוך כדקה. אם לא רואים אותם מיד — רענון של דף השירים פותר את זה.
+      שינויים ברשימה הזו נצברים ויוצאים לאתר יחד, בלחיצה אחת על "פרסום לאתר".
+      אחרי הפרסום הם מופיעים באתר תוך כדקה.
     </p>
   </section>
+
+  <!-- ===== פס השינויים הממתינים ===== -->
+  <div id="pending-bar" class="hidden fixed inset-x-0 bottom-0 z-50 px-3 pb-3 pointer-events-none"
+       role="status" aria-live="polite">
+    <div class="max-w-4xl mx-auto rounded-xl p-4 md:p-5 pointer-events-auto"
+         style="background:rgba(255,255,255,.95);backdrop-filter:blur(16px);
+                border:1px solid rgba(45,52,54,.12);box-shadow:0 -10px 40px rgba(45,52,54,.14)">
+      <div class="flex items-start gap-4 flex-wrap">
+        <div class="flex-1 min-w-[13rem]">
+          <div class="font-headline font-bold flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary" aria-hidden="true">schedule</span>
+            <span id="pending-title"></span>
+          </div>
+          <ul id="pending-list" class="mt-2 mr-1 text-sm text-on-surface/70 font-headline space-y-1"></ul>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button id="btn-discard" class="btn btn-ghost text-sm">ביטול השינויים</button>
+          <button id="btn-publish-pending" class="btn btn-primary">פרסום לאתר</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== FORM VIEW ===== -->
   <section id="view-form" class="hidden">
@@ -130,6 +153,9 @@
     </button>
     <h1 id="form-title" class="font-display text-5xl mb-2">שיר חדש</h1>
     <p class="text-on-surface/60 mb-8 font-headline">שדות עם <span class="text-secondary font-bold">*</span> הם חובה. את כל השאר אפשר להשלים אחר כך.</p>
+
+    <p id="form-pending-note" class="hidden rounded-xl px-5 py-4 mb-8 font-headline text-sm"
+       style="background:rgba(142,202,230,.25)"></p>
 
     <form id="song-form" class="space-y-6" novalidate>
 
@@ -238,6 +264,6 @@
   <p class="font-headline text-on-surface/60 mt-2">אפשר לחכות כאן, זה לוקח כמה שניות.</p>
 </div>
 
-<script src="config.js?v=8"></script>
-<script src="admin.js?v=8"></script>
+<script src="config.js?v=9"></script>
+<script src="admin.js?v=9"></script>
 </body></html>

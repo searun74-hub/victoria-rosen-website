@@ -22,7 +22,9 @@ const MAX_COVER = 3 * 1024 * 1024;
 const DRAFT_KEY = 'vr_admin_draft';
 
 const state = {
-  songs: [],
+  songs: [],          // הרשימה כפי שהיא על המסך, כולל שינויים שעוד לא פורסמו
+  published: [],      // הרשימה כפי שהיא באתר עכשיו — נקודת ההשוואה והחזרה
+  removed: [],        // slug של שירים שסומנו למחיקה ועוד לא פורסמו
   sha: null,
   editingSlug: null,   // null = שיר חדש
   tags: [],
@@ -112,20 +114,34 @@ async function api(path, options) {
   return data;
 }
 
+const clone = v => JSON.parse(JSON.stringify(v));
+
+/* מה שייכתב לאתר: הרשימה שעל המסך, בלי השירים שסומנו למחיקה */
+function songsToPublish() {
+  return state.songs.filter(s => !state.removed.includes(s.slug));
+}
+
 async function loadSongs() {
   const data = await api('/songs');
   state.songs = data.songs;
+  state.published = clone(data.songs);
+  state.removed = [];
   state.sha = data.sha;
   return data;
 }
 
+/* נקודת הכתיבה היחידה לאתר. אחריה אין יותר שינויים ממתינים — מה שעל המסך הוא מה שבאתר. */
 async function publishSongs(message) {
+  const payload = songsToPublish();
   const data = await api('/songs', {
     method: 'POST',
-    body: JSON.stringify({ songs: state.songs, sha: state.sha, message: message })
+    body: JSON.stringify({ songs: payload, sha: state.sha, message: message })
   });
   state.sha = data.sha;
   state.lastWarning = data.warning || null;   // מגיע מהגרסה המקומית, אם ה-push לא בוצע
+  state.songs = payload;
+  state.removed = [];
+  state.published = clone(payload);
 }
 
 async function uploadFile(path, file) {
@@ -212,11 +228,13 @@ function renderList() {
   const list = $('song-list');
   if (!state.songs.length) {
     list.innerHTML = '<p class="font-headline text-on-surface/60 py-8">עוד אין שירים. לחצו על "הוספת שיר חדש".</p>';
+    renderPending();
     return;
   }
 
   list.innerHTML = state.songs.map((song, i) => {
     const thumb = thumbFor(song);
+    const gone = state.removed.includes(song.slug);   // סומן למחיקה, עוד לא פורסם
 
     // התגיות של השיר עצמו, בצבע — אלה התוכן
     const tags = (song.tags || []).map(t =>
@@ -230,35 +248,42 @@ function renderList() {
     if (!song.youtubeId && !song.audioSrc) badges.push('<span class="chip" ' + quiet + '>בלי האזנה</span>');
     if (!tags.length) badges.push('<span class="chip" ' + quiet + '>בלי תגיות</span>');
     if (song.hidden) badges.push('<span class="chip" style="background:#2d3436;color:#fff;border-color:#2d3436">מוסתר</span>');
+    if (gone) badges.push('<span class="chip" style="background:#b91c1c;color:#fff;border-color:#b91c1c">יימחק בפרסום</span>');
 
     return '<div class="glass-card rounded-xl p-4 flex items-center gap-4 flex-wrap"' +
-      (song.hidden ? ' style="background:rgba(45,52,54,.07)"' : '') + '>' +
+      (gone ? ' style="background:rgba(185,28,28,.06);border-color:rgba(185,28,28,.25)"'
+            : (song.hidden ? ' style="background:rgba(45,52,54,.07)"' : '')) + '>' +
       '<div class="w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br ' + esc(song.thumbGradient || GRADIENTS[0]) +
         ' flex items-center justify-center">' +
         (thumb ? '<img src="' + esc(thumb) + '" alt="" class="w-full h-full object-cover">'
                : '<span class="material-symbols-outlined text-white/90" aria-hidden="true">music_note</span>') +
       '</div>' +
       '<div class="flex-1 min-w-[10rem]">' +
-        '<div class="font-headline font-bold text-lg' + (song.hidden ? ' text-on-surface/50' : '') + '">' +
+        '<div class="font-headline font-bold text-lg' + (song.hidden || gone ? ' text-on-surface/50' : '') + '"' +
+          (gone ? ' style="text-decoration:line-through"' : '') + '>' +
           esc(song.title) + '</div>' +
         (song.performer ? '<div class="text-on-surface/60 text-sm">' + esc(song.performer) + '</div>' : '') +
         '<div class="flex flex-wrap gap-1 mt-2">' + tags.join('') + badges.join('') + '</div>' +
       '</div>' +
       '<div class="flex items-center gap-1 flex-shrink-0">' +
-        '<button class="btn btn-ghost !px-2" data-act="up" data-i="' + i + '" title="העלאה למעלה" ' +
-          (i === 0 ? 'disabled style="opacity:.3"' : '') + '>' +
-          '<span class="material-symbols-outlined text-lg" aria-hidden="true">keyboard_arrow_up</span></button>' +
-        '<button class="btn btn-ghost !px-2" data-act="down" data-i="' + i + '" title="הורדה למטה" ' +
-          (i === state.songs.length - 1 ? 'disabled style="opacity:.3"' : '') + '>' +
-          '<span class="material-symbols-outlined text-lg" aria-hidden="true">keyboard_arrow_down</span></button>' +
-        '<button class="btn btn-ghost text-sm" data-act="edit" data-i="' + i + '">עריכה</button>' +
-        '<button class="btn text-sm ' + (song.hidden ? 'btn-primary !px-4 !py-2' : 'btn-ghost') +
-          '" data-act="hide" data-i="' + i + '">' +
-          (song.hidden ? 'החזרה לאתר' : 'הסתרה') + '</button>' +
-        '<button class="btn btn-danger text-sm" data-act="del" data-i="' + i + '">מחיקה</button>' +
+        (gone
+          ? '<button class="btn btn-primary text-sm !px-4 !py-2" data-act="undel" data-i="' + i + '">ביטול המחיקה</button>'
+          : '<button class="btn btn-ghost !px-2" data-act="up" data-i="' + i + '" title="העלאה למעלה" ' +
+              (i === 0 ? 'disabled style="opacity:.3"' : '') + '>' +
+              '<span class="material-symbols-outlined text-lg" aria-hidden="true">keyboard_arrow_up</span></button>' +
+            '<button class="btn btn-ghost !px-2" data-act="down" data-i="' + i + '" title="הורדה למטה" ' +
+              (i === state.songs.length - 1 ? 'disabled style="opacity:.3"' : '') + '>' +
+              '<span class="material-symbols-outlined text-lg" aria-hidden="true">keyboard_arrow_down</span></button>' +
+            '<button class="btn btn-ghost text-sm" data-act="edit" data-i="' + i + '">עריכה</button>' +
+            '<button class="btn text-sm ' + (song.hidden ? 'btn-primary !px-4 !py-2' : 'btn-ghost') +
+              '" data-act="hide" data-i="' + i + '">' +
+              (song.hidden ? 'החזרה לאתר' : 'הסתרה') + '</button>' +
+            '<button class="btn btn-danger text-sm" data-act="del" data-i="' + i + '">מחיקה</button>') +
       '</div>' +
     '</div>';
   }).join('');
+
+  renderPending();
 }
 
 $('song-list').addEventListener('click', async e => {
@@ -275,46 +300,139 @@ $('song-list').addEventListener('click', async e => {
     if (j < 0 || j >= state.songs.length) return;
     const copy = state.songs.slice();
     [copy[i], copy[j]] = [copy[j], copy[i]];
-    await commit(copy, 'שינוי סדר השירים בקטלוג', 'משנה את הסדר…');
+    stage(copy);
+    // החץ נשאר תחת האצבע גם אחרי שהשורה זזה, כדי שאפשר יהיה ללחוץ שוב
+    const again = $('song-list').querySelector('button[data-act="' + act + '"][data-i="' + j + '"]');
+    if (again && !again.disabled) again.focus();
     return;
   }
 
   if (act === 'hide') {
-    const copy = state.songs.map(s => s.slug === song.slug ? Object.assign({}, s, { hidden: !s.hidden }) : s);
-    await commit(copy,
-      (song.hidden ? 'הצגת השיר ' : 'הסתרת השיר ') + song.title,
-      song.hidden ? 'מחזיר את השיר לאתר…' : 'מסתיר את השיר…',
-      song.hidden ? 'השיר "' + esc(song.title) + '" חזר לאתר. הוא יופיע שם תוך כדקה.' : 'השיר "' + esc(song.title) + '" הוסתר. הוא יורד מהאתר תוך כדקה, אבל נשאר שמור כאן ואפשר להחזיר אותו בכל רגע.');
+    stage(state.songs.map(s => s.slug === song.slug ? Object.assign({}, s, { hidden: !s.hidden }) : s));
+    return;
+  }
+
+  if (act === 'undel') {
+    state.removed = state.removed.filter(slug => slug !== song.slug);
+    stage();
     return;
   }
 
   if (act === 'del') {
     const ok = await confirmDialog('למחוק את "' + song.title + '"?',
-      'השיר ייעלם מהאתר ומהרשימה הזו. אם אתם רק רוצים שהוא לא יוצג לזמן מה — עדיף "הסתרה", וזה הפיך בלחיצה.',
-      'מחיקה');
+      'השיר יסומן למחיקה, וייעלם מהאתר ומהרשימה הזו רק כשתלחצו "פרסום לאתר". עד אז אפשר לחזור בכם. ' +
+      'אם אתם רק רוצים שהוא לא יוצג לזמן מה — עדיף "הסתרה", וזה הפיך תמיד.',
+      'סימון למחיקה');
     if (!ok) return;
-    const copy = state.songs.filter(s => s.slug !== song.slug);
-    await commit(copy, 'מחיקת השיר ' + song.title, 'מוחק…', 'השיר "' + esc(song.title) + '" נמחק.');
+    state.removed.push(song.slug);
+    stage();
   }
 });
 
-async function commit(newSongs, message, busyText, okText) {
-  const before = state.songs;
-  state.songs = newSongs;
-  busy(busyText);
+/* ---------- שינויים ממתינים ----------
+   פעולות הרשימה (סדר, הסתרה, מחיקה) לא יוצאות לאתר מיד. הן משנות את מה שעל המסך,
+   ונצברות עד לחיצה אחת על "פרסום לאתר" — קומיט אחד, בנייה אחת, דקת המתנה אחת. */
+
+function pendingChanges() {
+  const out = [];
+  const current = songsToPublish();
+
+  for (const slug of state.removed) {
+    const song = state.songs.find(s => s.slug === slug);
+    if (song) out.push({ text: 'השיר "' + song.title + '" יימחק', short: 'מחיקת ' + song.title });
+  }
+
+  for (const song of current) {
+    const was = state.published.find(s => s.slug === song.slug);
+    if (was && !!was.hidden !== !!song.hidden) {
+      out.push(song.hidden
+        ? { text: 'השיר "' + song.title + '" יוסתר מהאתר', short: 'הסתרת ' + song.title }
+        : { text: 'השיר "' + song.title + '" יחזור לאתר', short: 'הצגת ' + song.title });
+    }
+  }
+
+  const now = current.map(s => s.slug).join('|');
+  const before = state.published.filter(s => !state.removed.includes(s.slug)).map(s => s.slug).join('|');
+  if (now !== before) out.push({ text: 'סדר השירים בקטלוג שונה', short: 'שינוי סדר השירים' });
+
+  return out;
+}
+
+function countWord(n) {
+  if (n === 1) return 'שינוי אחד ממתין לפרסום';
+  if (n === 2) return 'שני שינויים ממתינים לפרסום';
+  return n + ' שינויים ממתינים לפרסום';
+}
+
+function renderPending() {
+  const bar = $('pending-bar');
+  const changes = pendingChanges();
+  const inList = !$('view-list').classList.contains('hidden');
+
+  if (!changes.length || !inList) {
+    bar.classList.add('hidden');
+    document.body.style.paddingBottom = '';
+    return;
+  }
+
+  $('pending-title').textContent = countWord(changes.length);
+  $('pending-list').innerHTML = changes.map(c =>
+    '<li class="flex items-start gap-2"><span aria-hidden="true">•</span><span>' + esc(c.text) + '</span></li>').join('');
+  bar.classList.remove('hidden');
+  // כדי שהפס לא יכסה את השיר האחרון ברשימה
+  document.body.style.paddingBottom = bar.offsetHeight + 16 + 'px';
+}
+
+/* משנה את מה שעל המסך בלבד, ומרענן את הפס */
+function stage(newSongs) {
+  if (newSongs) state.songs = newSongs;
+  renderList();
+}
+
+async function publishPending() {
+  const changes = pendingChanges();
+  if (!changes.length) return;
+
+  let message = changes.map(c => c.short).join(', ');
+  if (message.length > 140) message = message.slice(0, 139) + '…';
+
+  const before = { songs: state.songs, removed: state.removed.slice(), published: state.published };
+  busy(changes.length === 1 ? 'מפרסם את השינוי…' : 'מפרסם את השינויים…');
   try {
     await publishSongs(message);
     renderList();
     if (state.lastWarning) banner('info', esc(state.lastWarning));
-    else if (okText) banner('ok', okText);
+    else banner('ok', changes.length === 1
+      ? 'השינוי פורסם. הוא יופיע באתר תוך כדקה.'
+      : changes.length + ' השינויים פורסמו. הם יופיעו באתר תוך כדקה.');
   } catch (err) {
-    state.songs = before;
+    state.songs = before.songs;
+    state.removed = before.removed;
+    state.published = before.published;
     renderList();
     banner('err', esc(err.message));
   } finally {
     unbusy();
   }
 }
+
+async function discardPending() {
+  const changes = pendingChanges();
+  if (!changes.length) return;
+  const ok = await confirmDialog('לבטל את השינויים?',
+    'הרשימה תחזור למה שמופיע באתר עכשיו. ' +
+    (changes.length === 1 ? 'השינוי שעשיתם כאן' : 'השינויים שעשיתם כאן') + ' לא יישמרו.',
+    'כן, לבטל');
+  if (!ok) return;
+  state.songs = clone(state.published);
+  state.removed = [];
+  clearBanner();
+  renderList();
+}
+
+window.addEventListener('beforeunload', e => {
+  if (pendingChanges().length) { e.preventDefault(); e.returnValue = ''; }
+});
 
 /* ---------- הטופס ---------- */
 function openForm(song) {
@@ -343,8 +461,20 @@ function openForm(song) {
 
   setMedia(song ? (song.youtubeId ? 'youtube' : (song.audioSrc ? 'audio' : 'none')) : 'youtube');
 
+  const waiting = pendingChanges().length;
+  const note = $('form-pending-note');
+  if (waiting) {
+    note.textContent = 'שימו לב: ברשימה ממתינים ' +
+      (waiting === 1 ? 'עוד שינוי אחד שלא פורסם. הוא יצא' : 'עוד ' + waiting + ' שינויים שלא פורסמו. הם יצאו') +
+      ' לאתר יחד עם השיר הזה.';
+    note.classList.remove('hidden');
+  } else {
+    note.classList.add('hidden');
+  }
+
   clearBanner();
   hide('view-list'); hide('loading'); show('view-form');
+  renderPending();
   renderTags(); refreshPreview();
   window.scrollTo({ top: 0 });
   $('f-title').focus();
@@ -658,6 +788,7 @@ $('song-form').addEventListener('submit', async e => {
       await uploadFile(song.coverImage, state.coverFile);
     }
 
+    const alsoPending = pendingChanges().length;
     busy(existing ? 'שומר את השינויים…' : 'מפרסם את השיר לאתר…');
     const copy = existing
       ? state.songs.map(s => s.slug === existing.slug ? song : s)
@@ -675,6 +806,7 @@ $('song-form').addEventListener('submit', async e => {
     renderList();
     if (state.lastWarning) { banner('info', esc(state.lastWarning)); return; }
     banner('ok', (existing ? 'השינויים נשמרו' : 'השיר "' + esc(title) + '" עלה לאתר') +
+      (alsoPending ? ', יחד עם ' + (alsoPending === 1 ? 'השינוי שהמתין' : alsoPending + ' השינויים שהמתינו') + ' ברשימה' : '') +
       '. אפשר לראות אותו כאן: <a class="underline" target="_blank" href="../song.html?slug=' +
       encodeURIComponent(slug) + '">' + esc(title) + '</a> — אם הוא עוד לא שם, רענון אחרי דקה יביא אותו.');
   } catch (e3) {
@@ -696,6 +828,9 @@ async function backToList() {
   renderList();
 }
 
+$('btn-publish-pending').addEventListener('click', publishPending);
+$('btn-discard').addEventListener('click', discardPending);
+
 $('btn-new').addEventListener('click', () => {
   const d = readDraft();
   if (d) { applyDraft(d); banner('info', 'שחזרנו טיוטה שהתחלתם קודם. אם לא צריך אותה, פשוט מוחקים את התוכן ומתחילים מחדש.'); }
@@ -707,6 +842,7 @@ $('btn-new').addEventListener('click', () => {
 function showLogin(message) {
   hide('loading'); hide('view-list'); hide('view-form');
   show('view-login');
+  renderPending();
   $('who').classList.add('hidden');
   $('btn-logout').classList.add('hidden');
   const note = $('login-note');

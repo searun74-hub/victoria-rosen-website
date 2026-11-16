@@ -191,24 +191,5 @@ const SONGS = [
     "priceNote": "לפי פנייה",
     "thumbGradient": "from-secondary/40 to-tertiary/40",
     "hidden": false
-  },
-  {
-    "slug": "waltz-hatzot",
-    "title": "ואלס חצות",
-    "performer": "",
-    "tags": [
-      "קלאסי",
-      "שיר לאירוע"
-    ],
-    "credits": "",
-    "blurb": "חקירה של זמן חולף וחוסנו של הזיכרון. נכתב עבור הזמנה פרטית לחגיגת יובל לנישואין.",
-    "lyricsExcerpt": "פנסי הרחוב מרצדים בחרוז מוצפן,\nעוקבים אחר צללים על פני הזמן.\nאנחנו פוסעים במעגלים כשהעיר ישנה,\nשומרים על הסודות שהשתיקה בונה.\n\nהו, הריקוד כבד והרצפה קרה,\nאך הלב זוכר את מה שהעין אמרה.\nחוט של כסף בלילה של קטיפה,\nמסתובב לנצח אל עבר הזריחה.",
-    "youtubeId": null,
-    "audioSrc": null,
-    "coverImage": null,
-    "duration": null,
-    "priceNote": "לפי פנייה",
-    "thumbGradient": "from-primary/30 to-secondary/30",
-    "hidden": false
   }
 ];

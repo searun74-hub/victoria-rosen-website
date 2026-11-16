@@ -250,9 +250,11 @@ function renderList() {
     if (song.hidden) badges.push('<span class="chip" style="background:#2d3436;color:#fff;border-color:#2d3436">מוסתר</span>');
     if (gone) badges.push('<span class="chip" style="background:#b91c1c;color:#fff;border-color:#b91c1c">יימחק בפרסום</span>');
 
-    return '<div class="glass-card rounded-xl p-4 flex items-center gap-4 flex-wrap"' +
+    return '<div class="song-row glass-card rounded-xl p-4 flex items-center gap-3 flex-wrap" draggable="true" data-slug="' +
+      esc(song.slug) + '"' +
       (gone ? ' style="background:rgba(185,28,28,.06);border-color:rgba(185,28,28,.25)"'
             : (song.hidden ? ' style="background:rgba(45,52,54,.07)"' : '')) + '>' +
+      '<span class="material-symbols-outlined text-on-surface/25 flex-shrink-0" aria-hidden="true">drag_indicator</span>' +
       '<div class="w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br ' + esc(song.thumbGradient || GRADIENTS[0]) +
         ' flex items-center justify-center">' +
         (thumb ? '<img src="' + esc(thumb) + '" alt="" class="w-full h-full object-cover">'
@@ -433,6 +435,52 @@ async function discardPending() {
 window.addEventListener('beforeunload', e => {
   if (pendingChanges().length) { e.preventDefault(); e.returnValue = ''; }
 });
+
+/* ---------- גרירה לשינוי הסדר ----------
+   הגרירה מזיזה את הכרטיס ב-DOM בזמן אמת, ובסופה קוראים את הסדר שיצא ומעדכנים
+   לפיו את state.songs. החצים ↑ ↓ נשארים — הם הדרך של מקלדת וקורא מסך. */
+
+(function enableDragSort() {
+  const list = $('song-list');
+  let dragging = null;
+  let fromButton = false;
+
+  list.addEventListener('mousedown', e => { fromButton = !!e.target.closest('button'); });
+
+  list.addEventListener('dragstart', e => {
+    const card = e.target.closest('.song-row');
+    if (!card || fromButton) { e.preventDefault(); return; }
+    dragging = card;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', card.dataset.slug); } catch (_e) { /* ignore */ }
+  });
+
+  list.addEventListener('dragover', e => {
+    if (!dragging) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const over = e.target.closest('.song-row');
+    if (!over || over === dragging) return;
+    const box = over.getBoundingClientRect();
+    const below = (e.clientY - box.top) > box.height / 2;
+    list.insertBefore(dragging, below ? over.nextSibling : over);
+  });
+
+  list.addEventListener('drop', e => e.preventDefault());
+
+  list.addEventListener('dragend', () => {
+    if (!dragging) return;
+    dragging.classList.remove('dragging');
+    dragging = null;
+
+    const order = Array.from(list.querySelectorAll('.song-row')).map(el => el.dataset.slug);
+    const bySlug = new Map(state.songs.map(s => [s.slug, s]));
+    const next = order.map(slug => bySlug.get(slug)).filter(Boolean);
+    if (next.length === state.songs.length) state.songs = next;
+    renderList();   // מצייר מחדש מהמצב, וגם מרענן את פס השינויים
+  });
+})();
 
 /* ---------- הטופס ---------- */
 function openForm(song) {

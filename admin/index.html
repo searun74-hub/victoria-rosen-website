@@ -52,6 +52,11 @@
   .tagchip.on .del { border-inline-start-color:rgba(45,52,54,.2); }
   .tagchip .tick { display:none; margin-inline-end:.25rem; font-weight:900; }
   .tagchip.on .tick { display:inline; }
+  /* גרירה לשינוי סדר השירים */
+  .song-row { cursor:grab; }
+  .song-row:active { cursor:grabbing; }
+  .song-row button { cursor:pointer; }
+  .song-row.dragging { opacity:.4; outline:2px dashed #f3a683; outline-offset:3px; }
   .spin { animation:sp 1s linear infinite; display:inline-block; }
   @keyframes sp { to { transform:rotate(360deg); } }
   .dropzone { border:2px dashed rgba(45,52,54,.2); border-radius:1rem; padding:2rem 1rem;
@@ -117,6 +122,10 @@
         <span class="material-symbols-outlined" aria-hidden="true">add</span>הוספת שיר חדש
       </button>
     </div>
+    <p class="text-on-surface/50 text-sm mb-3 font-headline flex items-center gap-1">
+      <span class="material-symbols-outlined text-base" aria-hidden="true">drag_indicator</span>
+      אפשר לגרור שיר כדי להזיז אותו, או להשתמש בחצים.
+    </p>
     <div id="song-list" class="space-y-3"></div>
     <p class="text-on-surface/50 text-sm mt-8 font-headline">
       שינויים ברשימה הזו נצברים ויוצאים לאתר יחד, בלחיצה אחת על "פרסום לאתר".
@@ -264,6 +273,6 @@
   <p class="font-headline text-on-surface/60 mt-2">אפשר לחכות כאן, זה לוקח כמה שניות.</p>
 </div>
 
-<script src="config.js?v=9"></script>
-<script src="admin.js?v=9"></script>
+<script src="config.js?v=10"></script>
+<script src="admin.js?v=10"></script>
 </body></html>
